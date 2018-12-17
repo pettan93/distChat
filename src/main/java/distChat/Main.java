@@ -3,34 +3,34 @@ package distChat;
 
 import kademlia.JKademliaNode;
 import kademlia.node.KademliaId;
-import kademlia.simulations.DHTContentImpl;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
 
 public class Main {
 
 
     public static void main(String[] args) throws IOException {
 
-        JKademliaNode kad1 = new JKademliaNode("JoshuaK", new KademliaId("ASF45678947584567467"), 7574);
+        JKademliaNode kad1 = new JKademliaNode("JoshuaK", new KademliaId("ASF45678947584567467"), 7001);
+//
+//        JKademliaNode kad2 = new JKademliaNode("Crystal", new KademliaId("ASERTKJDHGVHERJHGFLK"), 7002);
+//
+//        kad2.bootstrap(kad1.getNode());
 
 
+        System.out.println(InetAddress.getLocalHost());
 
-        JKademliaNode kad2 = new JKademliaNode("Crystal", new KademliaId("ASERTKJDHGVHERJHGFLK"), 7572);
+        InetAddress inetAddress = InetAddress.getByName("localhost");
 
-
-        kad2.bootstrap(kad1.getNode());
+        System.out.println(inetAddress);
 
 
 
 
 
     }
-
-
-
-
-
 
 
 //    public static void main(String[] args) {

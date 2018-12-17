@@ -151,6 +151,12 @@ public class JKademliaNode implements KademliaNode
                 udpPort,
                 new DefaultConfiguration()
         );
+//        this(
+//                ownerId,
+//                new Node(defaultId, InetAddress.getByName("localhost"), udpPort),
+//                udpPort,
+//                new DefaultConfiguration()
+//        );
     }
 
     /**
