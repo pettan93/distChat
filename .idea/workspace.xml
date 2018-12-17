@@ -19,8 +19,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/kademlia/JKademliaNode.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="155">
-              <caret line="147" selection-start-line="147" selection-end-line="147" />
+            <state relative-caret-position="512">
+              <caret line="157" column="78" selection-start-line="157" selection-start-column="78" selection-end-line="157" selection-end-column="78" />
               <folding>
                 <element signature="e#12419#12420#0" expanded="true" />
                 <element signature="e#12459#12460#0" expanded="true" />
@@ -29,14 +29,32 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/kademlia/node/Node.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="247">
+              <caret line="26" column="11" selection-start-line="26" selection-start-column="11" selection-end-line="26" selection-end-column="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/distChat/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="30" lean-forward="true" selection-start-line="30" selection-end-line="30" />
+            <state relative-caret-position="238">
+              <caret line="17" column="104" selection-start-line="17" selection-start-column="104" selection-end-line="17" selection-end-column="104" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/distChat/MyClientSetup.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="68">
+              <caret line="4" column="57" lean-forward="true" selection-start-line="4" selection-start-column="57" selection-end-line="4" selection-end-column="57" />
             </state>
           </provider>
         </entry>
@@ -128,6 +146,7 @@
         <option value="$PROJECT_DIR$/src/main/java/kademlia/simulations/ContentUpdatingTest.java" />
         <option value="$PROJECT_DIR$/src/main/resources/cmds" />
         <option value="$PROJECT_DIR$/src/main/java/distChat/mySimuluations/Simulation1.java" />
+        <option value="$PROJECT_DIR$/src/main/java/distChat/MyClientSetup.java" />
         <option value="$PROJECT_DIR$/src/main/java/kademlia/JKademliaNode.java" />
         <option value="$PROJECT_DIR$/src/main/java/distChat/Main.java" />
       </list>
@@ -192,15 +211,6 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="distChat" type="462c0819:PsiDirectoryNode" />
-              <item name="mySimuluations" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="distChat" type="b2602c69:ProjectViewProjectNode" />
-              <item name="distChat" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="kademlia" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -239,7 +249,7 @@
     <property name="UI_DESIGNER_EDITOR_MODE.UIDesignerToolWindowManager.WIDTH" value="223" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1545057031598" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1545059307222" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../EventMate_backend" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -363,18 +373,18 @@
       <workItem from="1544977442934" duration="12590000" />
       <workItem from="1545038774306" duration="441000" />
       <workItem from="1545040282327" duration="600000" />
-      <workItem from="1545041375444" duration="6950000" />
+      <workItem from="1545041375444" duration="9141000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="20581000" />
+    <option name="totallyTimeSpent" value="22772000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1366" height="768" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24963397" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24963397" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -383,7 +393,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3294271" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3450521" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.3450521" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.609375" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -411,7 +421,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/distChat/kademlia/dht/KademliaStorageEntryMetadata.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/kademlia/util/HashCalculator.java">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -681,15 +690,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/kademlia/node/Node.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-8">
-          <caret line="26" column="14" lean-forward="true" selection-start-line="26" selection-start-column="14" selection-end-line="26" selection-end-column="14" />
+        <state relative-caret-position="247">
+          <caret line="26" column="11" selection-start-line="26" selection-start-column="11" selection-end-line="26" selection-end-column="11" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/kademlia/JKademliaNode.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="147" selection-start-line="147" selection-end-line="147" />
+        <state relative-caret-position="512">
+          <caret line="157" column="78" selection-start-line="157" selection-start-column="78" selection-end-line="157" selection-end-column="78" />
           <folding>
             <element signature="e#12419#12420#0" expanded="true" />
             <element signature="e#12459#12460#0" expanded="true" />
@@ -697,10 +706,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/distChat/MyClientSetup.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="57" lean-forward="true" selection-start-line="4" selection-start-column="57" selection-end-line="4" selection-end-column="57" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/distChat/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="30" lean-forward="true" selection-start-line="30" selection-end-line="30" />
+        <state relative-caret-position="238">
+          <caret line="17" column="104" selection-start-line="17" selection-start-column="104" selection-end-line="17" selection-end-column="104" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

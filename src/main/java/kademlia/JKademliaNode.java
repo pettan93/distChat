@@ -1,5 +1,6 @@
 package kademlia;
 
+import distChat.MyClientSetup;
 import kademlia.dht.*;
 import kademlia.exceptions.ContentNotFoundException;
 import kademlia.exceptions.RoutingException;
@@ -145,18 +146,19 @@ public class JKademliaNode implements KademliaNode
 
     public JKademliaNode(String ownerId, KademliaId defaultId, int udpPort) throws IOException
     {
-        this(
-                ownerId,
-                new Node(defaultId, InetAddress.getLocalHost(), udpPort),
-                udpPort,
-                new DefaultConfiguration()
-        );
+        // TODO my change
 //        this(
 //                ownerId,
-//                new Node(defaultId, InetAddress.getByName("localhost"), udpPort),
+//                new Node(defaultId, InetAddress.getLocalHost(), udpPort),
 //                udpPort,
 //                new DefaultConfiguration()
 //        );
+        this(
+                ownerId,
+                new Node(defaultId, InetAddress.getByName(MyClientSetup.MY_IP), udpPort),
+                udpPort,
+                new DefaultConfiguration()
+        );
     }
 
     /**
