@@ -90,7 +90,7 @@ public class NodeLookupOperation implements Operation, Receiver
              */
             this.addNodes(this.localNode.getRoutingTable().getAllNodes());
 
-            /* If we haven't finished as yet, wait for a maximum of config.operationTimeout() time */
+            /* If we haven't finished as yet, justWait for a maximum of config.operationTimeout() time */
             int totalTimeWaited = 0;
             int timeInterval = 10;     // We re-check every n milliseconds
             while (totalTimeWaited < this.config.operationTimeout())

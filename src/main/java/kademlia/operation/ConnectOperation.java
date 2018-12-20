@@ -57,7 +57,7 @@ public class ConnectOperation implements Operation, Receiver
             /* Send a connect message to the bootstrap node */
             server.sendMessage(this.bootstrapNode, m, this);
 
-            /* If we haven't finished as yet, wait for a maximum of config.operationTimeout() time */
+            /* If we haven't finished as yet, justWait for a maximum of config.operationTimeout() time */
             int totalTimeWaited = 0;
             int timeInterval = 50;     // We re-check every 300 milliseconds
             while (totalTimeWaited < this.config.operationTimeout())
