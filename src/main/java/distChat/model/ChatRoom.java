@@ -20,7 +20,7 @@ public class ChatRoom implements KadContent, Serializable {
 
     private String name;
 
-    private List<Message> messages = new ArrayList<>();
+    private List<ChatRoomMessage> messages = new ArrayList<>();
 
     private List<ChatRoomParticipant> participants = new ArrayList<>();
 
@@ -30,13 +30,18 @@ public class ChatRoom implements KadContent, Serializable {
 
     private String ownerId;
 
+    public ChatRoom()
+    {
 
-    public ChatRoom(String name, String ownerId) {
+    }
+
+    public ChatRoom(String name, ChatUser owner) {
         this.key = new KademliaId(DigestUtils.sha1(name));
         this.name = name;
         this.created = new Date();
         this.lastUpdated = new Date();
-        this.ownerId = ownerId.toString();
+        this.ownerId = owner.getKadNode().getOwnerId();
+        this.participants.add(new ChatRoomParticipant(owner));
     }
 
     public List<ChatRoomParticipant> getParticipants() {
@@ -59,11 +64,11 @@ public class ChatRoom implements KadContent, Serializable {
         this.name = name;
     }
 
-    public List<Message> getMessages() {
+    public List<ChatRoomMessage> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<Message> messages) {
+    public void setMessages(List<ChatRoomMessage> messages) {
         this.messages = messages;
     }
 
@@ -99,9 +104,9 @@ public class ChatRoom implements KadContent, Serializable {
     }
 
     @Override
-    public KadContent fromSerializedForm(byte[] data) {
+    public ChatRoom fromSerializedForm(byte[] data) {
         Gson gson = new Gson();
-        return gson.fromJson(new String(data), DHTContentImpl.class);
+        return gson.fromJson(new String(data), ChatRoom.class);
     }
 
     @Override

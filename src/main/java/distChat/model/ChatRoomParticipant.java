@@ -6,6 +6,11 @@ public class ChatRoomParticipant {
 
     private String nickName;
 
+    public ChatRoomParticipant(ChatUser owner){
+        this.kademliaId = owner.getKadNode().getOwnerId();
+        this.nickName = owner.getNickName();
+    }
+
     public ChatRoomParticipant(String kademliaId, String nickName) {
         this.kademliaId = kademliaId;
         this.nickName = nickName;

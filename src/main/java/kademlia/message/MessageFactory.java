@@ -1,5 +1,9 @@
 package kademlia.message;
 
+import distChat.comm.ChatroomUpdateMessageReciever;
+import distChat.comm.StoreMsgReqMessage;
+import distChat.comm.StoreMsgReqReciever;
+import distChat.comm.ChatRoomUpdateMessage;
 import kademlia.KadConfiguration;
 import kademlia.KadServer;
 import kademlia.KademliaNode;
@@ -49,6 +53,10 @@ public class MessageFactory implements KademliaMessageFactory
                 return new SimpleMessage(in);
             case StoreContentMessage.CODE:
                 return new StoreContentMessage(in);
+            case StoreMsgReqMessage.CODE: // TODO PETTAN
+                return new StoreMsgReqMessage(in);
+            case ChatRoomUpdateMessage.CODE: // TODO PETTAN
+                return new ChatRoomUpdateMessage(in);
             default:
                 //System.out.println(this.localNode + " - No Message handler found for message. Code: " + code);
                 return new SimpleMessage(in);
@@ -69,8 +77,12 @@ public class MessageFactory implements KademliaMessageFactory
                 return new NodeLookupReceiver(server, this.localNode, this.config);
             case StoreContentMessage.CODE:
                 return new StoreContentReceiver(server, this.localNode, this.dht);
+            case StoreMsgReqMessage.CODE: // TODO PETTAN
+                return new StoreMsgReqReciever();
+            case ChatRoomUpdateMessage.CODE: // TODO PETTAN
+                return new ChatroomUpdateMessageReciever();
             default:
-                //System.out.println("No receiver found for message. Code: " + code);
+                System.out.println("No receiver found for message. Code: " + code);
                 return new SimpleReceiver();
         }
     }

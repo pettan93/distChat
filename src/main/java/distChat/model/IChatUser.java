@@ -10,5 +10,7 @@ public interface IChatUser {
 
     ChatRoom lookupChatRoomByName(String chatRoomName);
 
+    void sendMessage(ChatRoomMessage message, ChatRoom chatRoom);
+
 
 }

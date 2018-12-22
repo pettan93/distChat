@@ -48,7 +48,7 @@ public class Simulation4 {
         }
 
 
-        ChatRoom chatRoom = new ChatRoom("Football", rootUser.getKadNode().getOwnerId());
+        ChatRoom chatRoom = new ChatRoom("Football", rootUser);
         rootUser.storeChatroom(chatRoom);
 
 
