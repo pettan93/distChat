@@ -1,5 +1,6 @@
 package kademlia;
 
+import distChat.model.ChatUser;
 import kademlia.dht.*;
 import kademlia.exceptions.ContentNotFoundException;
 import kademlia.exceptions.RoutingException;
@@ -53,7 +54,16 @@ public class JKademliaNode implements KademliaNode
     /* Statistics */
     private final transient KadStatistician statistician;
 
-    
+    /* Chatting  TODO PETTAN */
+    private ChatUser chatUser;
+    public void setChatUser(ChatUser chatUser) {
+        this.chatUser = chatUser;
+    }
+    @Override
+    public ChatUser getChatUser() {
+        return chatUser;
+    }
+
     {
         statistician = new Statistician();
     }

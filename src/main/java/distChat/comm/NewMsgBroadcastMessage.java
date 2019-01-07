@@ -9,63 +9,67 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 
-public class StoreMsgReqMessage implements Message, Serializable {
+/**
+ * Store new message to chatroom
+ */
+public class NewMsgBroadcastMessage implements Message, Serializable {
 
-    public static final byte CODE = 0x50;
+    public static final byte CODE = 0x55;
+
+    private Node origin;
 
     private ChatRoomMessage content;
 
-    public StoreMsgReqMessage(ChatRoomMessage content)
-    {
+    public NewMsgBroadcastMessage(ChatRoomMessage content, Node origin) {
+        this.origin = origin;
         this.content = content;
     }
 
 
-    public StoreMsgReqMessage(DataInputStream in)
-    {
+    public NewMsgBroadcastMessage(DataInputStream in) {
         this.fromStream(in);
     }
 
+    public ChatRoomMessage getContent() {
+        return content;
+    }
+
+    public Node getOrigin() {
+        return this.origin;
+    }
 
     @Override
-    public byte code()
-    {
+    public byte code() {
         return CODE;
     }
 
     @Override
-    public void toStream(DataOutputStream out)
-    {
-        try
-        {
+    public void toStream(DataOutputStream out) {
+        try {
+            this.origin.toStream(out);
+
             out.writeInt(this.content.toJson().length());
 
             out.writeBytes(this.content.toJson());
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public final void fromStream(DataInputStream in)
-    {
-        try
-        {
+    public final void fromStream(DataInputStream in) {
+        try {
+            this.origin = new Node(in);
             byte[] buff = new byte[in.readInt()];
             in.readFully(buff);
             this.content = ChatRoomMessage.fromJson(new String(buff));
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return this.content.toString();
     }
 

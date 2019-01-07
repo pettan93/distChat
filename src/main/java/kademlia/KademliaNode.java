@@ -1,5 +1,6 @@
 package kademlia;
 
+import distChat.model.ChatUser;
 import kademlia.dht.GetParameter;
 import kademlia.dht.JKademliaStorageEntry;
 import kademlia.dht.KadContent;
@@ -152,4 +153,6 @@ public interface KademliaNode
      * @return The statistician that manages all statistics
      */
     public KadStatistician getStatistician();
+
+    public ChatUser getChatUser();
 }

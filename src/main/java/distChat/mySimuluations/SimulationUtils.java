@@ -61,7 +61,7 @@ public class SimulationUtils {
 
     public static void justWait(Integer seconds){
         try {
-            TimeUnit.SECONDS.sleep(1);
+            TimeUnit.SECONDS.sleep(seconds);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

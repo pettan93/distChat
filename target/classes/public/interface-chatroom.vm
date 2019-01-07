@@ -1,0 +1,72 @@
+#parse("public/parts/interfaceHead.vm")
+
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">$chatRoomName Chatroom</h1>
+    </div>
+
+
+
+    #set( $chatRoom = $chatUser.getInvolvedChatroomByName($chatRoomName) )
+
+    <div class="container">
+        <div class="row">
+            <div class="col-8">
+                #foreach( $message in $chatRoom.getMessages() )
+
+                    <div class="card">
+                        <div class="card-header">
+                            $message.getSenderName() ($message.getSendTime())
+                        </div>
+                        <div class="card-body">
+                            $message.getContent()
+                        </div>
+                    </div>
+                #end
+
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+
+            </div>
+            <div class="col-4">
+                <h5>Chatroom owner</h5>
+                $chatRoom.getOwnerId()
+                <br>
+                <p></p>
+                <h5>Participants</h5>
+                #foreach( $participant in $chatRoom.getParticipants() )
+                    <p>$participant.getNickName()</p>
+                #end
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed-bottom msgbox">
+        <div class="card">
+            <div class="card-body">
+                <form method="post" action="/chatroom/$chatRoomName/newmsg">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="newMessage" placeholder="Write a message">
+                        <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">Send</button>
+                        </span>
+                    </div>
+                </form>
+
+            ##                <form>
+            ##                    <input type="text" class="form-control" id="exampleInputEmail1"
+            ##                           placeholder="Write a message">
+            ##                    <button type="submit" class="btn btn-primary">Send</button>
+            ##                </form>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+
+#parse("public/parts/interfaceFooter.vm")

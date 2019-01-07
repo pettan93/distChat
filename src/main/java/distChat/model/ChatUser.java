@@ -1,31 +1,49 @@
 package distChat.model;
 
-import distChat.comm.StoreMsgReqMessage;
+import distChat.MessageLog;
+import distChat.comm.NewMsgReqConfirmReciever;
+import distChat.comm.NewMsgReqMessage;
 import kademlia.JKademliaNode;
 import kademlia.dht.GetParameter;
 import kademlia.dht.JKademliaStorageEntry;
+import kademlia.dht.KademliaStorageEntry;
+import kademlia.dht.KademliaStorageEntryMetadata;
 import kademlia.exceptions.ContentNotFoundException;
 import kademlia.node.KademliaId;
-import kademlia.node.Node;
 import kademlia.routing.Contact;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
-public class ChatUser implements IChatUser {
+public class ChatUser {
+
+    public MessageLog messageLog;
 
     private JKademliaNode kadNode;
 
     private String nickName;
 
-    private List<ChatRoom> chatRoomsInvolved = new ArrayList<>();
+    private HashMap<String, ChatRoom> chatRoomsInvolved = new HashMap<>();
 
     public ChatUser(String nickName, JKademliaNode kadNode) {
         this.kadNode = kadNode;
         this.nickName = nickName;
+        this.messageLog = new MessageLog(nickName);
+    }
+
+    public MessageLog getMessageLog() {
+        return messageLog;
+    }
+
+    public void setMessageLog(MessageLog messageLog) {
+        this.messageLog = messageLog;
+    }
+
+    public void log(String content) {
+        this.messageLog.log(content);
     }
 
     public JKademliaNode getKadNode() {
@@ -53,21 +71,52 @@ public class ChatUser implements IChatUser {
         }
     }
 
-    @Override
+    public HashMap<String, ChatRoom> getChatRoomsInvolved() {
+        return chatRoomsInvolved;
+    }
+
     public void storeChatroom(ChatRoom chatRoom) {
         try {
             this.kadNode.put(chatRoom);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        chatRoomsInvolved.put(chatRoom.getName(), chatRoom);
     }
 
-    @Override
+    public ChatRoom getStoredChatroom(String chatroomName) {
+
+        KademliaId chatroomKey = new KademliaId(DigestUtils.sha1(chatroomName));
+
+        KademliaStorageEntryMetadata chatromMetaData = null;
+        KademliaStorageEntry chatroomEntry = null;
+        ChatRoom localChatRoom = null;
+        for (KademliaStorageEntryMetadata storageEntry : this.getKadNode().getDHT().getStorageEntries()) {
+            if (storageEntry.getKey().equals(chatroomKey)) {
+                chatromMetaData = storageEntry;
+            }
+        }
+
+
+        if (chatromMetaData != null) {
+            try {
+                chatroomEntry = this.getKadNode().getDHT().retrieve(chatroomKey, chatromMetaData.hashCode());
+                localChatRoom = new ChatRoom().fromSerializedForm(chatroomEntry.getContent());
+
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return localChatRoom;
+    }
+
+
     public Contact lookupUserByName(String userName) {
         return null;
     }
 
-    @Override
+
     public ChatRoom lookupChatRoomByName(String chatRoomName) {
 
         KademliaId chatRoomId = new KademliaId(DigestUtils.sha1(chatRoomName));
@@ -80,46 +129,79 @@ public class ChatUser implements IChatUser {
 
             foundedChatRoom = (ChatRoom) new ChatRoom().fromSerializedForm(found.getContent());
 
-            chatRoomsInvolved.add(foundedChatRoom);
+            if (!chatRoomsInvolved.containsKey(foundedChatRoom.getName())) {
+                chatRoomsInvolved.put(chatRoomName, foundedChatRoom);
+            }
 
-        } catch (ContentNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+
+        } catch (ContentNotFoundException | IOException e) {
             e.printStackTrace();
         }
 
         return foundedChatRoom;
+    }
 
+    public void sendMessage(ChatRoomMessage message, Contact targetContact, Boolean firstAttempt) {
+
+        messageLog.log("Sending new message to chatroom" + message.getChatroomName());
+
+        if (targetContact.getNode().getNodeId().equals(this.kadNode.getNode().getNodeId())) {
+            messageLog.log("Owner sending message to his own room!");
+
+
+        } else {
+            try {
+                getKadNode().getServer().sendMessage(
+                        targetContact.getNode(),
+                        new NewMsgReqMessage(message, this.getKadNode().getNode()),
+                        new NewMsgReqConfirmReciever(
+                                this.getKadNode().getServer(),
+                                this.kadNode,
+                                this.kadNode.getDHT(),
+                                this.kadNode.getCurrentConfiguration(),
+                                message,
+                                firstAttempt));
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
-    public void sendMessage(ChatRoomMessage message, ChatRoom chatRoom) {
-
-        message.setChatRoomId(chatRoom.getKey().toString());
-
-        // TODO lookup user by id
-        Contact chatRoomOwner = null;
-
-        for(Contact c : (List<Contact>) getKadNode().getRoutingTable().getAllContacts()){
-            System.out.println(c.getNode());
-            if(c.getNode().getNodeId().toString().equals(chatRoom.getOwnerId())){
-                chatRoomOwner = c;
-            }
-        }
-
-        System.out.println(chatRoomOwner);
-
-
-        try {
-            getKadNode().getServer().sendMessage(
-                    chatRoomOwner.getNode(),
-                    new StoreMsgReqMessage(new ChatRoomMessage("Anna", "ahoj")),
-                    null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    public String toString() {
+        return "ChatUser{" +
+                ", nickName='" + nickName + '\'' +
+                ", chatRoomsInvolved=" + chatRoomsInvolved +
+                "kadNode=" + kadNode +
+                '}';
     }
 
 
+    public ChatRoom getInvolvedChatroomByName(String chatRoomName) {
+
+        return chatRoomsInvolved.get(chatRoomName);
+
+    }
+
+    public List<Contact> getContacts() {
+        List<Contact> contacts = new ArrayList<>();
+        for (Object o : getKadNode().getRoutingTable().getAllContacts()) {
+            if (o instanceof Contact) {
+                contacts.add((Contact) o);
+            }
+        }
+        return contacts;
+    }
+
+    public Contact getContactByKademliaId(String kademliaIdString) {
+
+        KademliaId kademliaId = new KademliaId((DigestUtils.sha1(kademliaIdString)));
+
+        return getContacts().stream()
+                .filter(contact -> kademliaId.equals(contact.getNode().getNodeId()))
+                .findAny()
+                .orElse(null);
+    }
 }

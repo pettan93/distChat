@@ -115,4 +115,12 @@ public class Contact implements Comparable<Contact>
         return this.getNode().hashCode();
     }
 
+    @Override
+    public String toString() {
+        return "Contact{" +
+                "n=" + n +
+                ", lastSeen=" + lastSeen +
+                ", staleCount=" + staleCount +
+                '}';
+    }
 }

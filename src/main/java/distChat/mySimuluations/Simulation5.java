@@ -1,14 +1,10 @@
 package distChat.mySimuluations;
 
-import distChat.comm.ChatroomUpdateMessageReciever;
-import distChat.comm.StoreMsgReqMessage;
-import distChat.comm.StoreMsgReqReciever;
 import distChat.factory.ChatNodeBuilder;
-import distChat.model.ChatRoomMessage;
+import distChat.model.ChatRoom;
 import distChat.model.ChatUser;
 
 import java.io.IOException;
-import java.util.Date;
 
 public class Simulation5 {
 
@@ -26,10 +22,14 @@ public class Simulation5 {
 
         ChatUser user2 = chatNodeBuilder.setNickName("Anna").build();
 
-        user1.getKadNode().getServer().sendMessage(
-                user2.getKadNode().getNode(),
-                new StoreMsgReqMessage(new ChatRoomMessage("Anna","ahoj")),
-                null);
+        ChatRoom chatRoom = new ChatRoom("Football", user1);
+        user1.storeChatroom(chatRoom);
+
+
+
+
+
+
 
 
 

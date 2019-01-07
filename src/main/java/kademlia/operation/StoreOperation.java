@@ -54,7 +54,7 @@ public class StoreOperation implements Operation
         /* Create the message */
         Message msg = new StoreContentMessage(this.localNode.getNode(), this.storageEntry);
 
-        System.out.println("intend to store on " + nodes.size() +" nodes");
+//        System.out.println("intend to store on " + nodes.size() +" nodes");
 
         /*Store the message on all of the K-Nodes*/
         for (Node n : nodes)

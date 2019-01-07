@@ -1,27 +1,34 @@
-<b>test</b>
+<b>manager</b>
 
-#if(true)
-    true
-#else
-    false
-#end
+###if(true)
+##    true
+###else
+##    false
+###end
 
 
+<ul>
+    #foreach( $uiUser in $uiUsers )
+        #set( $UIPort = $uiUser.getKadNode().getPort() + 1000 )
+        <li><a href="http://localhost:$UIPort" target="_blank">$uiUser.getNickName()</a> </li>
+    #end
+</ul>
 
-<table>
-    <tr>
-        <th>Firstname</th>
-        <th>Lastname</th>
-        <th>Age</th>
-    </tr>
-    <tr>
-        <td>Jill</td>
-        <td>Smith</td>
-        <td>50</td>
-    </tr>
-    <tr>
-        <td>Eve</td>
-        <td>Jackson</td>
-        <td>94</td>
-    </tr>
-</table>
+
+##<table>
+##    <tr>
+##        <th>Firstname</th>
+##        <th>Lastname</th>
+##        <th>Age</th>
+##    </tr>
+##    <tr>
+##        <td>Jill</td>
+##        <td>Smith</td>
+##        <td>50</td>
+##    </tr>
+##    <tr>
+##        <td>Eve</td>
+##        <td>Jackson</td>
+##        <td>94</td>
+##    </tr>
+##</table>

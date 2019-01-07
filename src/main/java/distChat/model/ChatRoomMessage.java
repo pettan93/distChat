@@ -1,15 +1,13 @@
 package distChat.model;
 
 import com.google.gson.Gson;
-import kademlia.dht.KadContent;
-import kademlia.simulations.DHTContentImpl;
 
 import java.io.Serializable;
 import java.util.Date;
 
 public class ChatRoomMessage implements Serializable {
 
-    private String chatRoomId;
+    private String chatroomName;
 
     private String senderName;
 
@@ -17,18 +15,19 @@ public class ChatRoomMessage implements Serializable {
 
     private Date sendTime;
 
-    public ChatRoomMessage(String senderName, String content) {
+    public ChatRoomMessage(String senderName, String content,String chatRoomId) {
         this.senderName = senderName;
         this.content = content;
         this.sendTime = new Date();
+        this.chatroomName = chatRoomId;
     }
 
-    public String getChatRoomId() {
-        return chatRoomId;
+    public String getChatroomName() {
+        return chatroomName;
     }
 
-    public void setChatRoomId(String chatRoomId) {
-        this.chatRoomId = chatRoomId;
+    public void setChatroomName(String chatroomName) {
+        this.chatroomName = chatroomName;
     }
 
     public String getSenderName() {
@@ -70,7 +69,8 @@ public class ChatRoomMessage implements Serializable {
     @Override
     public String toString() {
         return "ChatRoomMessage{" +
-                "senderName='" + senderName + '\'' +
+                "chatroomName='" + chatroomName + '\'' +
+                ", senderName='" + senderName + '\'' +
                 ", content='" + content + '\'' +
                 ", sendTime=" + sendTime +
                 '}';

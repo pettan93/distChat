@@ -1,8 +1,8 @@
 package kademlia.message;
 
 import distChat.comm.ChatroomUpdateMessageReciever;
-import distChat.comm.StoreMsgReqMessage;
-import distChat.comm.StoreMsgReqReciever;
+import distChat.comm.NewMsgReqMessage;
+import distChat.comm.NewMsgReqReciever;
 import distChat.comm.ChatRoomUpdateMessage;
 import kademlia.KadConfiguration;
 import kademlia.KadServer;
@@ -35,6 +35,9 @@ public class MessageFactory implements KademliaMessageFactory
     @Override
     public Message createMessage(byte code, DataInputStream in) throws IOException
     {
+
+//        System.out.println("create message " + code);
+
         switch (code)
         {
             case AcknowledgeMessage.CODE:
@@ -53,8 +56,8 @@ public class MessageFactory implements KademliaMessageFactory
                 return new SimpleMessage(in);
             case StoreContentMessage.CODE:
                 return new StoreContentMessage(in);
-            case StoreMsgReqMessage.CODE: // TODO PETTAN
-                return new StoreMsgReqMessage(in);
+            case NewMsgReqMessage.CODE: // TODO PETTAN
+                return new NewMsgReqMessage(in);
             case ChatRoomUpdateMessage.CODE: // TODO PETTAN
                 return new ChatRoomUpdateMessage(in);
             default:
@@ -77,8 +80,8 @@ public class MessageFactory implements KademliaMessageFactory
                 return new NodeLookupReceiver(server, this.localNode, this.config);
             case StoreContentMessage.CODE:
                 return new StoreContentReceiver(server, this.localNode, this.dht);
-            case StoreMsgReqMessage.CODE: // TODO PETTAN
-                return new StoreMsgReqReciever();
+            case NewMsgReqMessage.CODE: // TODO PETTAN
+                return new NewMsgReqReciever(server, this.localNode, this.dht, this.config);
             case ChatRoomUpdateMessage.CODE: // TODO PETTAN
                 return new ChatroomUpdateMessageReciever();
             default:

@@ -1,5 +1,7 @@
 package distChat.model;
 
+import java.util.Objects;
+
 public class ChatRoomParticipant {
 
     private String kademliaId;
@@ -30,5 +32,18 @@ public class ChatRoomParticipant {
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChatRoomParticipant that = (ChatRoomParticipant) o;
+        return Objects.equals(kademliaId, that.kademliaId);
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
     }
 }

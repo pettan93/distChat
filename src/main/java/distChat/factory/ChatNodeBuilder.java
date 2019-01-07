@@ -20,6 +20,8 @@ public class ChatNodeBuilder {
 
     private Integer portPoolMax;
 
+    private Integer port;
+
     private Set<Integer> usedPorts = new HashSet<>();
 
     RandomNameGenerator rnd = new RandomNameGenerator(500);
@@ -44,22 +46,36 @@ public class ChatNodeBuilder {
         return this;
     }
 
+    public ChatNodeBuilder setPort(int port) {
+        this.port = port;
+        return this;
+    }
+
     public ChatUser build() {
 
         if (this.nickName == null) {
             this.nickName = getRandomNickName();
         }
 
+        if (this.port == null) {
+            this.port = getRandomUnusedPort();
+        }
+
         try {
-            return new ChatUser(
+            ChatUser chatUser = new ChatUser(
                     this.nickName,
                     new JKademliaNode(
                             this.nickName,
                             new KademliaId(DigestUtils.sha1(this.nickName)),
-                            getRandomUnusedPort()));
+                            this.port
+                    ));
+
+            chatUser.getKadNode().setChatUser(chatUser);
+            return chatUser;
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return null;
     }
 
@@ -68,7 +84,6 @@ public class ChatNodeBuilder {
     }
 
     private Integer getRandomUnusedPort() {
-
         int r;
         do {
             r = (int) (Math.random() * (portPoolMax - portPoolMin)) + portPoolMin;
@@ -80,7 +95,6 @@ public class ChatNodeBuilder {
     }
 
     private String getRandomNickName() {
-
         return rnd.next();
     }
 

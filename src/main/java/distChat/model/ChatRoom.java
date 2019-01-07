@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class ChatRoom implements KadContent, Serializable {
 
@@ -30,10 +31,7 @@ public class ChatRoom implements KadContent, Serializable {
 
     private String ownerId;
 
-    public ChatRoom()
-    {
-
-    }
+    public ChatRoom() { }
 
     public ChatRoom(String name, ChatUser owner) {
         this.key = new KademliaId(DigestUtils.sha1(name));
@@ -42,6 +40,11 @@ public class ChatRoom implements KadContent, Serializable {
         this.lastUpdated = new Date();
         this.ownerId = owner.getKadNode().getOwnerId();
         this.participants.add(new ChatRoomParticipant(owner));
+    }
+
+    public void addMessage(ChatRoomMessage chatRoomMessage){
+        this.getMessages().add(chatRoomMessage);
+        this.lastUpdated = new Date();
     }
 
     public List<ChatRoomParticipant> getParticipants() {
@@ -70,6 +73,10 @@ public class ChatRoom implements KadContent, Serializable {
 
     public void setMessages(List<ChatRoomMessage> messages) {
         this.messages = messages;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 
     @Override
@@ -111,6 +118,20 @@ public class ChatRoom implements KadContent, Serializable {
 
     @Override
     public String toString() {
-        return "Room = name[" + name + "],ownerId[" + ownerId + "],msgs[" + messages.size() + "], updated[" + Utils.formatDate(lastUpdated, "dd.MM.yyyy HH:mm:ss") + "]";
+        return "Room = name[" + name + "],ownerId[" + ownerId + "],msgs[" + messages.size() + "], updated[" + Utils.formatDate(lastUpdated, "dd.MM.yyyy HH:mm:ss.SSS") + "]";
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChatRoom chatRoom = (ChatRoom) o;
+        return Objects.equals(key, chatRoom.key);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(key);
     }
 }
