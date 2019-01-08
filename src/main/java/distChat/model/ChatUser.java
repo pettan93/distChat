@@ -1,8 +1,8 @@
 package distChat.model;
 
 import distChat.MessageLog;
-import distChat.comm.NewMsgReqConfirmReciever;
-import distChat.comm.NewMsgReqMessage;
+import distChat.comm.ChatRoomUpdateConfirmReciever;
+import distChat.comm.ChatRoomUpdateMessage;
 import kademlia.JKademliaNode;
 import kademlia.dht.GetParameter;
 import kademlia.dht.JKademliaStorageEntry;
@@ -129,11 +129,6 @@ public class ChatUser {
 
             foundedChatRoom = (ChatRoom) new ChatRoom().fromSerializedForm(found.getContent());
 
-            if (!chatRoomsInvolved.containsKey(foundedChatRoom.getName())) {
-                chatRoomsInvolved.put(chatRoomName, foundedChatRoom);
-            }
-
-
         } catch (ContentNotFoundException | IOException e) {
             e.printStackTrace();
         }
@@ -141,25 +136,26 @@ public class ChatUser {
         return foundedChatRoom;
     }
 
-    public void sendMessage(ChatRoomMessage message, Contact targetContact, Boolean firstAttempt) {
+    public void sendMessage(ChatRoomMessage message, String chatRoomName, Contact targetContact, Boolean firstAttempt) {
 
-        messageLog.log("Sending new message to chatroom" + message.getChatroomName());
+        messageLog.log("Sending new message to chatroom" + chatRoomName);
 
         if (targetContact.getNode().getNodeId().equals(this.kadNode.getNode().getNodeId())) {
             messageLog.log("Owner sending message to his own room!");
 
+            // TODO !
 
         } else {
             try {
                 getKadNode().getServer().sendMessage(
                         targetContact.getNode(),
-                        new NewMsgReqMessage(message, this.getKadNode().getNode()),
-                        new NewMsgReqConfirmReciever(
+                        new ChatRoomUpdateMessage(chatRoomName, message, this.getKadNode().getNode()),
+                        new ChatRoomUpdateConfirmReciever(
                                 this.getKadNode().getServer(),
                                 this.kadNode,
                                 this.kadNode.getDHT(),
                                 this.kadNode.getCurrentConfiguration(),
-                                message,
+                                new ChatroomUpdateContent(chatRoomName, message, null),
                                 firstAttempt));
 
 
@@ -167,6 +163,37 @@ public class ChatUser {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void joinChatroom(ChatRoomParticipant participant, String chatRoomName, Contact targetContact) {
+
+        messageLog.log("joining to chatroom" + chatRoomName);
+
+
+        if(getInvolvedChatroomByName(chatRoomName) != null){
+            if(getInvolvedChatroomByName(chatRoomName).getParticipants().contains(new ChatRoomParticipant(this))){
+                messageLog.log("Cant join to chat, where you already are");
+                return;
+            }
+        }
+
+        try {
+            getKadNode().getServer().sendMessage(
+                    targetContact.getNode(),
+                    new ChatRoomUpdateMessage(chatRoomName, participant, this.getKadNode().getNode()),
+                    new ChatRoomUpdateConfirmReciever(
+                            this.getKadNode().getServer(),
+                            this.kadNode,
+                            this.kadNode.getDHT(),
+                            this.kadNode.getCurrentConfiguration(),
+                            new ChatroomUpdateContent(chatRoomName, null, participant),
+                            true));
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -183,6 +210,10 @@ public class ChatUser {
 
         return chatRoomsInvolved.get(chatRoomName);
 
+    }
+
+    public void updateInvolvedChatroomByName(String chatRoomName, ChatRoom chatRoom) {
+        this.chatRoomsInvolved.put(chatRoomName, chatRoom);
     }
 
     public List<Contact> getContacts() {

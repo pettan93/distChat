@@ -6,12 +6,11 @@ import distChat.model.ChatRoom;
 import distChat.model.ChatRoomMessage;
 import distChat.model.ChatRoomParticipant;
 import distChat.model.ChatUser;
-import kademlia.routing.Contact;
 
 import java.io.IOException;
 import java.util.Arrays;
 
-public class SimulationSendChatroomMsg {
+public class Simulation7 {
 
     public static ChatNodeBuilder chatNodeBuilder = new ChatNodeBuilder(
             "192.168.137.107",
@@ -42,43 +41,8 @@ public class SimulationSendChatroomMsg {
         ChatRoom chatRoom = new ChatRoom("Football", user1);
         chatRoom.addMessage(new ChatRoomMessage(user1.getNickName(), "First message!"));
 
-        chatRoom.addParticipants(new ChatRoomParticipant(user2));
-        chatRoom.addParticipants(new ChatRoomParticipant(user3));
-
         user1.storeChatroom(chatRoom);
 
-
-        user2.lookupChatRoomByName("Football");
-        user3.lookupChatRoomByName("Football");
-
-
-//        var localChatRoom = user2.getInvolvedChatroomByName("Football");
-//        var msg = new ChatRoomMessage(
-//                user2.getNickName(),
-//                "ahoj, tvoje Anna");
-//        var chatRoomOwner = user2.getContactByKademliaId(localChatRoom.getOwnerId());
-
-
-//        SimulationUtils.justWait(2);
-
-//        user1.getKadNode().shutdown(false);
-
-//        user2.sendMessage(msg,
-//                localChatRoom.getName(),
-//                chatRoomOwner,
-//                true);
-
-
-//        SimulationUtils.justWait(2);
-//
-//        System.out.println(user5);
-//        System.out.println(user5.getStoredChatroom("Football"));
-//
-//        System.out.println(user3);
-//        System.out.println(user3.getStoredChatroom("Football"));
-
-
-//        SimulationUtils.justWait(4);
 
         UIController.buildUserController(Arrays.asList(user1, user2, user3, user4, user5, user6, user7));
         UIController.initManager();

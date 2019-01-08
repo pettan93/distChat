@@ -1,7 +1,9 @@
 package distChat.comm;
 
+import distChat.model.ChatRoom;
 import distChat.model.ChatRoomMessage;
 import distChat.model.ChatUser;
+import distChat.model.ChatroomUpdateContent;
 import kademlia.KadConfiguration;
 import kademlia.KadServer;
 import kademlia.KademliaNode;
@@ -11,7 +13,7 @@ import kademlia.message.Receiver;
 
 import java.io.IOException;
 
-public class NewMsgBroadcastReciever implements Receiver {
+public class ChatRoomUpdateConfirmReciever implements Receiver {
 
     private final KadServer server;
     private final KademliaNode localNode;
@@ -19,25 +21,25 @@ public class NewMsgBroadcastReciever implements Receiver {
     private final KadConfiguration config;
     private ChatUser me;
 
-    private ChatRoomMessage msg;
+    private ChatroomUpdateContent msg;
     private Boolean firstAttempt;
 
 
-    public NewMsgBroadcastReciever(KadServer server, KademliaNode localNode, KademliaDHT dht, KadConfiguration config,
-                                   ChatRoomMessage msg,
-                                   Boolean firstAttempt) {
+    public ChatRoomUpdateConfirmReciever(KadServer server, KademliaNode localNode, KademliaDHT dht, KadConfiguration config,
+                                         ChatroomUpdateContent msg,
+                                         Boolean firstAttempt) {
         this.server = server;
         this.localNode = localNode;
         this.dht = dht;
         this.config = config;
         this.msg = msg;
-        this.firstAttempt= firstAttempt;
+        this.firstAttempt = firstAttempt;
         this.me = localNode.getChatUser();
     }
 
     @Override
     public void receive(Message incoming, int commId) {
-        me.log("NewMsgReqConfirmReciever - confirmed");
+        me.log("MsgReqConfirmReciever - confirmed");
     }
 
     @Override
@@ -46,20 +48,18 @@ public class NewMsgBroadcastReciever implements Receiver {
         me.log("owner didnt respond");
 
 
-
-        if(firstAttempt){
+        if (firstAttempt) {
             me.log("lookuping chatroom and sending msg again");
 
             Runnable task = () -> {
                 var me = localNode.getChatUser();
                 var localChatRoom = me.getInvolvedChatroomByName("Football");
                 var chatRoomOwner = me.getContactByKademliaId(localChatRoom.getOwnerId());
-                me.sendMessage(msg,chatRoomOwner,false);
+                me.sendMessage(msg.getChatRoomMessage(), msg.getChatRoomName(), chatRoomOwner, false);
             };
             Thread thread = new Thread(task);
             thread.start();
         }
-
 
 
     }

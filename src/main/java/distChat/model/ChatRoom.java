@@ -1,10 +1,9 @@
 package distChat.model;
 
 import com.google.gson.Gson;
-import distChat.Utils;
+import distChat.MyUtils;
 import kademlia.dht.KadContent;
 import kademlia.node.KademliaId;
-import kademlia.simulations.DHTContentImpl;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
@@ -31,7 +30,8 @@ public class ChatRoom implements KadContent, Serializable {
 
     private String ownerId;
 
-    public ChatRoom() { }
+    public ChatRoom() {
+    }
 
     public ChatRoom(String name, ChatUser owner) {
         this.key = new KademliaId(DigestUtils.sha1(name));
@@ -42,10 +42,18 @@ public class ChatRoom implements KadContent, Serializable {
         this.participants.add(new ChatRoomParticipant(owner));
     }
 
-    public void addMessage(ChatRoomMessage chatRoomMessage){
+    public void addMessage(ChatRoomMessage chatRoomMessage) {
         this.getMessages().add(chatRoomMessage);
         this.lastUpdated = new Date();
     }
+
+    public void addParticipants(ChatRoomParticipant chatRoomParticipant) {
+        if (!participants.contains(chatRoomParticipant)) {
+            this.participants.add(chatRoomParticipant);
+            this.lastUpdated = new Date();
+        }
+    }
+
 
     public List<ChatRoomParticipant> getParticipants() {
         return participants;
@@ -118,7 +126,7 @@ public class ChatRoom implements KadContent, Serializable {
 
     @Override
     public String toString() {
-        return "Room = name[" + name + "],ownerId[" + ownerId + "],msgs[" + messages.size() + "], updated[" + Utils.formatDate(lastUpdated, "dd.MM.yyyy HH:mm:ss.SSS") + "]";
+        return "Room = name[" + name + "],ownerId[" + ownerId + "],msgs[" + messages.size() + "], updated[" + MyUtils.formatDate(lastUpdated, "dd.MM.yyyy HH:mm:ss.SSS") + "]";
     }
 
 

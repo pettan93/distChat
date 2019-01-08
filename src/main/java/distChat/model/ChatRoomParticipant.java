@@ -1,30 +1,31 @@
 package distChat.model;
 
+import com.google.gson.Gson;
+
 import java.util.Objects;
 
 public class ChatRoomParticipant {
 
-    private String kademliaId;
+    private String chatroomName;
 
     private String nickName;
 
-    public ChatRoomParticipant(ChatUser owner){
-        this.kademliaId = owner.getKadNode().getOwnerId();
-        this.nickName = owner.getNickName();
+    public ChatRoomParticipant(ChatUser chatUser) {
+        this.nickName = chatUser.getNickName();
     }
 
     public ChatRoomParticipant(String kademliaId, String nickName) {
-        this.kademliaId = kademliaId;
         this.nickName = nickName;
     }
 
-    public String getKademliaId() {
-        return kademliaId;
+    public String getChatroomName() {
+        return chatroomName;
     }
 
-    public void setKademliaId(String kademliaId) {
-        this.kademliaId = kademliaId;
+    public void setChatroomName(String chatroomName) {
+        this.chatroomName = chatroomName;
     }
+
 
     public String getNickName() {
         return nickName;
@@ -34,16 +35,22 @@ public class ChatRoomParticipant {
         this.nickName = nickName;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ChatRoomParticipant that = (ChatRoomParticipant) o;
-        return Objects.equals(kademliaId, that.kademliaId);
-    }
 
     @Override
-    public int hashCode() {
-        return 0;
+    public String toString() {
+        return "ChatRoomParticipant{" +
+                "chatroomName='" + chatroomName + '\'' +
+                '}';
+    }
+
+    public String toJson() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
+
+    public static ChatRoomParticipant fromJson(String data) {
+        Gson gson = new Gson();
+        return gson.fromJson(data, ChatRoomParticipant.class);
     }
 }

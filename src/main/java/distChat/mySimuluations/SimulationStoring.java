@@ -43,7 +43,7 @@ public class SimulationStoring {
         var chatRoomArtur = user5.getStoredChatroom("Football");
 
 
-        chatRoomArtur.addMessage(new ChatRoomMessage("Artur","ahoj",chatRoomArtur.getKey().toString()));
+        chatRoomArtur.addMessage(new ChatRoomMessage("Artur","ahoj"));
 
         user5.storeChatroom(chatRoomArtur);
 

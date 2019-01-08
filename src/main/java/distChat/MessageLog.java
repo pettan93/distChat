@@ -17,7 +17,7 @@ public class MessageLog {
 
     public void log(String msg){
         var sb = new StringBuilder();
-        sb.append(Utils.formatDate(new Date(), "dd.MM.yyyy HH:mm:ss.SSS")).append(" | ");
+        sb.append(MyUtils.formatDate(new Date(), "dd.MM.yyyy HH:mm:ss.SSS")).append(" | ");
         sb.append(ownerNickname).append(" | ");
         sb.append(msg);
         content.add(sb.toString());

@@ -24,7 +24,7 @@
                 <div class="container">
                     <p>Search result for: $searchQuery</p>
                     <p class="lead">Chatroom name <b>$result.getName()</b>, chatroom owner <b>$result.getOwnerId()</b>.</p>
-                    <a class="btn btn-primary btn-lg" href="#" role="button">Join chatroom</a>
+                    <a class="btn btn-primary btn-lg" href="/joinchatroom?chatRoomName=$result.getName()" role="button">Join chatroom</a>
                 </div>
             </div>
         #else

@@ -72,6 +72,15 @@ public class UIController {
             ctx.render("public/interface-finder.vm", model);
         });
 
+        app.get("/joinchatroom", ctx -> {
+            Map<String, Object> model = new HashMap<>();
+            if (ctx.queryParam("chatRoomName") != null) {
+                ActionProcessor.processJoinChatroom(chatUser, ctx.queryParam("chatRoomName"));
+            }
+            model.put("chatUser", chatUser);
+            ctx.redirect("/chatroom/" + ctx.queryParam("chatroomname"));
+        });
+
 
         app.get("/chatroom/:chatroomname", ctx -> {
             Map<String, Object> model = new HashMap<>();

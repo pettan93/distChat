@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class ChatRoomMessage implements Serializable {
 
-    private String chatroomName;
+//    private String chatroomName;
 
     private String senderName;
 
@@ -15,20 +15,20 @@ public class ChatRoomMessage implements Serializable {
 
     private Date sendTime;
 
-    public ChatRoomMessage(String senderName, String content,String chatRoomId) {
+    public ChatRoomMessage(String senderName, String content) {
         this.senderName = senderName;
         this.content = content;
         this.sendTime = new Date();
-        this.chatroomName = chatRoomId;
+//        this.chatroomName = chatRoomId;
     }
 
-    public String getChatroomName() {
-        return chatroomName;
-    }
-
-    public void setChatroomName(String chatroomName) {
-        this.chatroomName = chatroomName;
-    }
+//    public String getChatroomName() {
+//        return chatroomName;
+//    }
+//
+//    public void setChatroomName(String chatroomName) {
+//        this.chatroomName = chatroomName;
+//    }
 
     public String getSenderName() {
         return senderName;
@@ -69,7 +69,7 @@ public class ChatRoomMessage implements Serializable {
     @Override
     public String toString() {
         return "ChatRoomMessage{" +
-                "chatroomName='" + chatroomName + '\'' +
+//                "chatroomName='" + chatroomName + '\'' +
                 ", senderName='" + senderName + '\'' +
                 ", content='" + content + '\'' +
                 ", sendTime=" + sendTime +
