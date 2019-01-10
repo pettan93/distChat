@@ -20,9 +20,7 @@ public class SimulationBlank {
     public static void main(String[] args) throws IOException {
 
 
-
         ChatUser user1 = chatNodeBuilder.setNickName("Petr").setPort(7001).build();
-
 
         UIController.buildUserController(Arrays.asList(user1));
         UIController.initManager();

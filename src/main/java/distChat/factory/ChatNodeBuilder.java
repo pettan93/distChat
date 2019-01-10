@@ -71,6 +71,7 @@ public class ChatNodeBuilder {
                     new JKademliaNode(
                             this.nickName,
                             new KademliaId(DigestUtils.sha1(this.nickName)),
+                            inetAddress,
                             this.port
                     ));
 
