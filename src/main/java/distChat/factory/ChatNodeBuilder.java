@@ -28,6 +28,8 @@ public class ChatNodeBuilder {
 
     /*****************/
 
+    public static ChatNodeBuilder instance;
+
     private String nickName;
 
 
@@ -39,6 +41,8 @@ public class ChatNodeBuilder {
         }
         this.portPoolMin = portPoolMin;
         this.portPoolMax = portPoolMax;
+
+        ChatNodeBuilder.instance = this;
     }
 
     public ChatNodeBuilder setNickName(String name) {
@@ -71,6 +75,8 @@ public class ChatNodeBuilder {
                     ));
 
             chatUser.getKadNode().setChatUser(chatUser);
+
+            this.port= null;
             return chatUser;
         } catch (IOException e) {
             e.printStackTrace();

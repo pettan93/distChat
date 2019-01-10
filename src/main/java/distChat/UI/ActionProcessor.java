@@ -21,14 +21,13 @@ public class ActionProcessor {
 
         chatUser.sendMessage(chatRoomMessage, chatRoomName, ownerContact, true);
 
-
         return true;
     }
 
 
     public static ChatRoom processFindChatroom(ChatUser chatUser, String chatRoomName) {
 
-        chatUser.log("Find chatroom process");
+        chatUser.log("Find chatroom process ["+chatRoomName+"]");
 
         var result = chatUser.lookupChatRoomByName(chatRoomName);
 

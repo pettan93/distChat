@@ -1,5 +1,6 @@
 package kademlia.operation;
 
+import distChat.operation.RepeatOperation;
 import kademlia.exceptions.RoutingException;
 
 import java.io.IOException;

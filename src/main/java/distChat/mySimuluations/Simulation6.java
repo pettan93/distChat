@@ -25,7 +25,7 @@ public class Simulation6 {
 
 
         ChatRoom chatRoom = new ChatRoom("Football", user1);
-        user1.storeChatroom(chatRoom);
+        user1.storeChatroom(chatRoom,true);
 
 
 

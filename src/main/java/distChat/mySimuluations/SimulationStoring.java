@@ -36,7 +36,7 @@ public class SimulationStoring {
         user7.bootstrap(user5);
 
         ChatRoom chatRoom = new ChatRoom("Football", user1);
-        user7.storeChatroom(chatRoom);
+        user7.storeChatroom(chatRoom,true);
 
         SimulationUtils.justWait(2);
 
@@ -45,7 +45,7 @@ public class SimulationStoring {
 
         chatRoomArtur.addMessage(new ChatRoomMessage("Artur","ahoj"));
 
-        user5.storeChatroom(chatRoomArtur);
+        user5.storeChatroom(chatRoomArtur,true);
 
 
         SimulationUtils.justWait(2);

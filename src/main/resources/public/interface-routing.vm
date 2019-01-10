@@ -5,7 +5,38 @@
         <h1 class="h2">routing</h1>
     </div>
 
-    $chatUser.getKadNode().getRoutingTable().toString();
+    <div class="container">
+        <div class="row">
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">KademliaID</th>
+                    <th scope="col">Adress</th>
+
+                </tr>
+                </thead>
+                <tbody>
+
+
+
+                    #foreach($contact in $chatUser.getContacts())
+
+                    <tr>
+                        <td>$contact.getNode().getNodeId()</td>
+                        <td>$contact.getNode().getSocketAddress()</td>
+                    </tr>
+
+                    #end
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+
 
 </main>
 

@@ -2,13 +2,29 @@
 
 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-        <h1 class="h2">Dashboard</h1>
+        <h1 class="h2">Logger</h1>
     </div>
 
+    <div id="refresher-div-log">
 
-    $chatUser.getMessageLog().getContent()
+        #parse("public/refresher/log.vm")
+
+    </div>
 
 </main>
+
+
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        setInterval(function () {
+            $.get("/refresher/log", function (data) {
+                $("#refresher-div-log").html(data);
+            });
+            console.log("refreshing  content")
+        }, 1000);
+    });
+</script>
+
 
 
 #parse("public/parts/interfaceFooter.vm")

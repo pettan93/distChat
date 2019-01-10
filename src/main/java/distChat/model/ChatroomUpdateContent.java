@@ -10,10 +10,17 @@ public class ChatroomUpdateContent {
 
     private ChatRoomParticipant chatRoomParticipant;
 
+    private String newOwner;
+
     public ChatroomUpdateContent(String chatRoomName, ChatRoomMessage chatRoomMessage, ChatRoomParticipant chatRoomParticipant) {
         this.chatRoomName = chatRoomName;
         this.chatRoomMessage = chatRoomMessage;
         this.chatRoomParticipant = chatRoomParticipant;
+    }
+
+    public ChatroomUpdateContent(String chatRoomName, String newOwner) {
+        this.chatRoomName = chatRoomName;
+        this.newOwner = newOwner;
     }
 
     public String getChatRoomName() {
@@ -28,6 +35,13 @@ public class ChatroomUpdateContent {
         return chatRoomParticipant;
     }
 
+    public String getNewOwner() {
+        return newOwner;
+    }
+
+    public void setNewOwner(String newOwner) {
+        this.newOwner = newOwner;
+    }
 
     public String toJson() {
         Gson gson = new Gson();
@@ -40,5 +54,13 @@ public class ChatroomUpdateContent {
         return gson.fromJson(data, ChatroomUpdateContent.class);
     }
 
-
+    @Override
+    public String toString() {
+        return "ChatroomUpdateContent{" +
+                "chatRoomName='" + chatRoomName + '\'' +
+                ", chatRoomMessage=" + chatRoomMessage +
+                ", chatRoomParticipant=" + chatRoomParticipant +
+                ", newowner=" + newOwner +
+                '}';
+    }
 }

@@ -1,6 +1,8 @@
 package kademlia.message;
 
 
+import distChat.comm.AreYouAwakeMessage;
+import distChat.comm.AreYouAwakeReciever;
 import distChat.comm.ChatRoomUpdateMessage;
 import distChat.comm.ChatRoomUpdateReciever;
 import kademlia.KadConfiguration;
@@ -57,6 +59,8 @@ public class MessageFactory implements KademliaMessageFactory
                 return new StoreContentMessage(in);
             case ChatRoomUpdateMessage.CODE: // TODO PETTAN
                 return new ChatRoomUpdateMessage(in);
+            case AreYouAwakeMessage.CODE: // TODO PETTAN
+                return new AreYouAwakeMessage(in);
             default:
                 //System.out.println(this.localNode + " - No Message handler found for message. Code: " + code);
                 return new SimpleMessage(in);
@@ -79,6 +83,8 @@ public class MessageFactory implements KademliaMessageFactory
                 return new StoreContentReceiver(server, this.localNode, this.dht);
             case ChatRoomUpdateMessage.CODE: // TODO PETTAN
                 return new ChatRoomUpdateReciever(server, this.localNode, this.dht, this.config);
+            case AreYouAwakeMessage.CODE: // TODO PETTAN
+                return new AreYouAwakeReciever(this.localNode);
             default:
                 System.out.println("No receiver found for message. Code: " + code);
                 return new SimpleReceiver();

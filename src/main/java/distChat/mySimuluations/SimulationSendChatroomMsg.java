@@ -45,7 +45,7 @@ public class SimulationSendChatroomMsg {
         chatRoom.addParticipants(new ChatRoomParticipant(user2));
         chatRoom.addParticipants(new ChatRoomParticipant(user3));
 
-        user1.storeChatroom(chatRoom);
+        user1.storeChatroom(chatRoom,true);
 
 
         user2.lookupChatRoomByName("Football");

@@ -37,6 +37,11 @@ public class ChatRoomUpdateMessage implements Message, Serializable {
         this.content = new ChatroomUpdateContent(chatRoomName, null, content);
     }
 
+    public ChatRoomUpdateMessage(String chatRoomName, String newOnwer, Node origin) {
+        this.origin = origin;
+        this.content = new ChatroomUpdateContent(chatRoomName, newOnwer);
+    }
+
     public ChatRoomUpdateMessage(DataInputStream in) {
         this.fromStream(in);
     }
@@ -81,7 +86,7 @@ public class ChatRoomUpdateMessage implements Message, Serializable {
 
     @Override
     public String toString() {
-        return this.content.toString();
+        return "Origin["+origin.getNodeId()+"] "+ this.content.toString();
     }
 
 

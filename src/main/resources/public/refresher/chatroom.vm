@@ -1,0 +1,56 @@
+#set( $chatRoom = $chatUser.getInvolvedChatroomByName($chatRoomName) )
+
+#if($chatRoom )
+
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            #foreach( $message in $chatRoom.getMessages() )
+
+
+
+                #if($message.getSenderName() == $chatUser.getNickName())
+                    <div class="alert alert-primary">
+                        <h4 style="display: inline;"><span class="badge badge-secondary">$message.getSenderName()</span>
+                        </h4>
+                        $message.getContent()
+                        <span class="badge badge-pill badge-info float-right">$message.getSendTime()</span>
+                    </div>
+                #else
+                    <div class="alert alert-secondary">
+                        <h4 style="display: inline;"><span class="badge badge-secondary">$message.getSenderName()</span>
+                        </h4>
+                        $message.getContent()
+                        <span class="badge badge-pill badge-info float-right">$message.getSendTime()</span>
+                    </div>
+                #end
+
+
+            #end
+
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+
+        </div>
+        <div class="col-4">
+            <p></p>
+            <h5>Participants</h5>
+            #foreach( $participant in $chatRoom.getParticipants() )
+                <p>$participant.getNickName()</p>
+            #end
+
+            <br>
+            <h6>Info</h6>
+            <small>$chatRoom.getStatusText()</small>
+        </div>
+    </div>
+</div>
+
+
+#else
+<div>You are not in such chatroom</div>
+#end

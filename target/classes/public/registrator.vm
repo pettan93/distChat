@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>DistChat Manager</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://getbootstrap.com/docs/4.0/examples/dashboard/dashboard.css">
+    <link rel="stylesheet" href="/myStyles.css">
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.js"
+            integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+            crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+
+    </div>
+</nav>
+
+<!-- Page Content -->
+<div class="container">
+
+    <br><br>
+
+    <section id="cover">
+        <div id="cover-caption">
+            <div id="container" class="container">
+                <div class="row">
+                    <div class="col-sm-6 offset-sm-3 text-center">
+                        <h1 class="display-6">Join to existing network</h1>
+                        <br>
+                        <div class="info-form">
+                            <form action="/registrator" method="post" class="form-inlin justify-content-center">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" name="registerNodeNickName"
+                                           aria-describedby="nicknameHelp" placeholder="Enter your nickname">
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" name="registerBootstrapNodeNickName"
+                                           placeholder="Enter bootstrap node nickname">
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" name="registerBootstrapNodeIpPort"
+                                           placeholder="Enter bootstrap node adress (port:ip)">
+                                </div>
+                                <button type="submit" class="btn btn-success ">Join network!</button>
+                            </form>
+                        </div>
+                        <br>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

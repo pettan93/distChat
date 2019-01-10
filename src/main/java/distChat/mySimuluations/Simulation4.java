@@ -49,7 +49,7 @@ public class Simulation4 {
 
 
         ChatRoom chatRoom = new ChatRoom("Football", rootUser);
-        rootUser.storeChatroom(chatRoom);
+        rootUser.storeChatroom(chatRoom,true);
 
 
         SimulationUtils.justWait(2);

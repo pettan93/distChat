@@ -1,0 +1,8 @@
+#foreach ($chatRoom in $chatUser.getChatRoomsInvolved())
+<li class="nav-item">
+    <a class="nav-link" href="/chatroom/$chatRoom.getName()">
+        <span data-feather="file-text"></span>
+        $chatRoom.getName()
+    </a>
+</li>
+#end

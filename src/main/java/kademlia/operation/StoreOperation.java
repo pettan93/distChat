@@ -1,5 +1,7 @@
 package kademlia.operation;
 
+import distChat.model.ChatRoom;
+import distChat.model.ChatroomUpdateContent;
 import kademlia.KadConfiguration;
 import kademlia.KadServer;
 import kademlia.KademliaNode;
@@ -23,7 +25,7 @@ public class StoreOperation implements Operation
 
     private final KadServer server;
     private final KademliaNode localNode;
-    private final JKademliaStorageEntry storageEntry;
+    private JKademliaStorageEntry storageEntry;
     private final KademliaDHT localDht;
     private final KadConfiguration config;
 
@@ -51,10 +53,22 @@ public class StoreOperation implements Operation
         ndlo.execute();
         List<Node> nodes = ndlo.getClosestNodes();
 
+        // TODO Pettan
+        if(storageEntry.getContentMetadata().getType().equals(ChatRoom.TYPE)) {
+            localNode.getChatUser().log("intent to store on " + nodes.size() + " nodes ");
+            var chatroom = new ChatRoom().fromSerializedForm(storageEntry.getContent());
+            chatroom.setStoragers(nodes);
+            this.storageEntry = new JKademliaStorageEntry(chatroom);
+        }
+
+
+
+
+
+
         /* Create the message */
         Message msg = new StoreContentMessage(this.localNode.getNode(), this.storageEntry);
 
-//        System.out.println("intend to store on " + nodes.size() +" nodes");
 
         /*Store the message on all of the K-Nodes*/
         for (Node n : nodes)

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import distChat.MyUtils;
 import kademlia.dht.KadContent;
 import kademlia.node.KademliaId;
+import kademlia.node.Node;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
@@ -24,6 +25,8 @@ public class ChatRoom implements KadContent, Serializable {
 
     private List<ChatRoomParticipant> participants = new ArrayList<>();
 
+    private List<Node> storagers = new ArrayList<>();
+
     private Date created;
 
     private Date lastUpdated;
@@ -39,7 +42,20 @@ public class ChatRoom implements KadContent, Serializable {
         this.created = new Date();
         this.lastUpdated = new Date();
         this.ownerId = owner.getKadNode().getOwnerId();
-        this.participants.add(new ChatRoomParticipant(owner));
+    }
+
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+        this.lastUpdated = new Date();
+    }
+
+    public List<Node> getStoragers() {
+        return storagers;
+    }
+
+    public void setStoragers(List<Node> storagers) {
+        this.storagers = storagers;
     }
 
     public void addMessage(ChatRoomMessage chatRoomMessage) {
@@ -54,6 +70,24 @@ public class ChatRoom implements KadContent, Serializable {
         }
     }
 
+
+    public String getStatusText() {
+
+        StringBuilder sb = new StringBuilder();
+
+
+        sb.append("<p>owner: [" + getOwnerId() + "]</p>");
+        sb.append("<p>msgs[" + messages.size() + "]</p>");
+        sb.append("<p>created:[" + MyUtils.formatDate(this.created, "dd.MM.yyyy HH:mm:ss.SSS") + "]</p>");
+        sb.append("<p>updated:[" + MyUtils.formatDate(this.lastUpdated, "dd.MM.yyyy HH:mm:ss.SSS") + "]</p>");
+        sb.append("<p>storagers:</p>[");
+        for (Node storager : storagers) {
+            sb.append("<p>"+storager.getNodeId() + "</p>");
+        }
+        sb.append("]");
+
+        return sb.toString();
+    }
 
     public List<ChatRoomParticipant> getParticipants() {
         return participants;
@@ -126,7 +160,7 @@ public class ChatRoom implements KadContent, Serializable {
 
     @Override
     public String toString() {
-        return "Room = name[" + name + "],ownerId[" + ownerId + "],msgs[" + messages.size() + "], updated[" + MyUtils.formatDate(lastUpdated, "dd.MM.yyyy HH:mm:ss.SSS") + "]";
+        return "Room = name[" + name + "],ownerId[" + ownerId + "],msgs[" + messages.size() + "], updated[" + MyUtils.formatDate(lastUpdated, "dd.MM.yyyy HH:mm:ss.SSS") + "],participants[" + participants.size() + "], storagers[" + this.getStoragers().size() + "]";
     }
 
 

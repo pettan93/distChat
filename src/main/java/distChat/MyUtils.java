@@ -18,4 +18,6 @@ public class MyUtils {
         return String.format("%0" + (bytes.length << 1) + "X", bi);
     }
 
+
+
 }

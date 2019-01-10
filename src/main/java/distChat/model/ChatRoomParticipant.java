@@ -6,24 +6,14 @@ import java.util.Objects;
 
 public class ChatRoomParticipant {
 
-    private String chatroomName;
-
     private String nickName;
 
     public ChatRoomParticipant(ChatUser chatUser) {
         this.nickName = chatUser.getNickName();
     }
 
-    public ChatRoomParticipant(String kademliaId, String nickName) {
+    public ChatRoomParticipant(String nickName) {
         this.nickName = nickName;
-    }
-
-    public String getChatroomName() {
-        return chatroomName;
-    }
-
-    public void setChatroomName(String chatroomName) {
-        this.chatroomName = chatroomName;
     }
 
 
@@ -35,11 +25,10 @@ public class ChatRoomParticipant {
         this.nickName = nickName;
     }
 
-
     @Override
     public String toString() {
         return "ChatRoomParticipant{" +
-                "chatroomName='" + chatroomName + '\'' +
+                "nickName='" + nickName + '\'' +
                 '}';
     }
 
@@ -52,5 +41,18 @@ public class ChatRoomParticipant {
     public static ChatRoomParticipant fromJson(String data) {
         Gson gson = new Gson();
         return gson.fromJson(data, ChatRoomParticipant.class);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChatRoomParticipant that = (ChatRoomParticipant) o;
+        return Objects.equals(nickName, that.nickName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nickName);
     }
 }

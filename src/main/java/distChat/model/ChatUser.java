@@ -3,6 +3,9 @@ package distChat.model;
 import distChat.MessageLog;
 import distChat.comm.ChatRoomUpdateConfirmReciever;
 import distChat.comm.ChatRoomUpdateMessage;
+import distChat.operation.OwnerBackupSchedulerOperation;
+import distChat.operation.OwnerChatroomUpdateOperation;
+import distChat.operation.StoragerCheckerOperation;
 import kademlia.JKademliaNode;
 import kademlia.dht.GetParameter;
 import kademlia.dht.JKademliaStorageEntry;
@@ -14,13 +17,13 @@ import kademlia.routing.Contact;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class ChatUser {
 
-    public MessageLog messageLog;
+    private OperationScheduler op;
+
+    private MessageLog messageLog;
 
     private JKademliaNode kadNode;
 
@@ -28,10 +31,57 @@ public class ChatUser {
 
     private HashMap<String, ChatRoom> chatRoomsInvolved = new HashMap<>();
 
+    private HashMap<String, ChatRoom> chatRoomsOwned = new HashMap<>();
+
+    private int uiPort;
+
     public ChatUser(String nickName, JKademliaNode kadNode) {
         this.kadNode = kadNode;
         this.nickName = nickName;
         this.messageLog = new MessageLog(nickName);
+        this.op = new OperationScheduler(
+                Set.of(
+                        new StoragerCheckerOperation(this)
+                        ,new OwnerBackupSchedulerOperation(this)
+        ));
+    }
+
+
+    public void setUiPort(int uiPort) {
+        this.uiPort = uiPort;
+    }
+
+    public int getUiPort() {
+        return uiPort;
+    }
+
+    public String getNetworkStatus() {
+
+        boolean running = this.getKadNode().getServer().isRunning();
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("[");
+        if (running) sb.append("RUNNING");
+        if (!running) sb.append("OFFLINE");
+        sb.append("]");
+        sb.append(", Adress: [" + this.kadNode.getNode().getSocketAddress().getAddress().getHostAddress() + "]");
+        sb.append(", Port: [" + this.kadNode.getPort() + "]");
+        sb.append(", GUI: [" + this.uiPort + "]");
+
+        return sb.toString();
+    }
+
+    public List<KademliaStorageEntryMetadata> getDHTStoredContent() {
+        return this.getKadNode().getDHT().getStorageEntries();
+    }
+
+    public OperationScheduler getOp() {
+        return op;
+    }
+
+    public Boolean isNodeRunning() {
+        return this.getKadNode().getServer().isRunning();
     }
 
     public MessageLog getMessageLog() {
@@ -63,6 +113,19 @@ public class ChatUser {
     }
 
 
+    public void reconnect(JKademliaNode myNewNode) {
+        this.chatRoomsInvolved = new HashMap<>();
+        this.chatRoomsOwned = new HashMap<>();
+        this.messageLog = new MessageLog(this.nickName);
+        this.setKadNode(myNewNode);
+
+        this.op = new OperationScheduler(
+                Set.of(
+                        new StoragerCheckerOperation(this)
+                        ,new OwnerBackupSchedulerOperation(this)
+                ));
+    }
+
     public void bootstrap(ChatUser chatNode) {
         try {
             this.getKadNode().bootstrap(chatNode.getKadNode().getNode());
@@ -75,14 +138,49 @@ public class ChatUser {
         return chatRoomsInvolved;
     }
 
-    public void storeChatroom(ChatRoom chatRoom) {
+    public HashMap<String, ChatRoom> getChatRoomsOwned() {
+        return chatRoomsOwned;
+    }
+
+    public void storeChatroom(ChatRoom chatRoom, Boolean joinAlso) {
+
+        if (joinAlso)
+            chatRoom.getParticipants().add(new ChatRoomParticipant(this));
+
         try {
             this.kadNode.put(chatRoom);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        chatRoomsInvolved.put(chatRoom.getName(), chatRoom);
+
+        if (joinAlso)
+            chatRoomsInvolved.put(chatRoom.getName(), chatRoom);
+
+        this.chatRoomsOwned.put(chatRoom.getName(), chatRoom);
     }
+
+    public void updateLocalCopy(ChatRoom chatroom) {
+        chatRoomsInvolved.put(chatroom.getName(), chatroom);
+    }
+
+    public List<ChatRoom> getStoredChatrooms() {
+
+        var returnValue = new ArrayList<ChatRoom>();
+
+        for (KademliaStorageEntryMetadata storageEntry : this.getKadNode().getDHT().getStorageEntries()) {
+
+            if (storageEntry.getType().equals(ChatRoom.TYPE)) {
+                try {
+                    returnValue.add(new ChatRoom().fromSerializedForm(this.getKadNode().getDHT().get(storageEntry).getContent()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return returnValue;
+    }
+
 
     public ChatRoom getStoredChatroom(String chatroomName) {
 
@@ -111,12 +209,6 @@ public class ChatUser {
         return localChatRoom;
     }
 
-
-    public Contact lookupUserByName(String userName) {
-        return null;
-    }
-
-
     public ChatRoom lookupChatRoomByName(String chatRoomName) {
 
         KademliaId chatRoomId = new KademliaId(DigestUtils.sha1(chatRoomName));
@@ -138,12 +230,18 @@ public class ChatUser {
 
     public void sendMessage(ChatRoomMessage message, String chatRoomName, Contact targetContact, Boolean firstAttempt) {
 
-        messageLog.log("Sending new message to chatroom" + chatRoomName);
+        messageLog.log("Sending new message to chatroom" + chatRoomName + " to contact " + targetContact.getNode().getNodeId());
 
         if (targetContact.getNode().getNodeId().equals(this.kadNode.getNode().getNodeId())) {
             messageLog.log("Owner sending message to his own room!");
 
-            // TODO !
+            this.op.queueOperation(
+                    new OwnerChatroomUpdateOperation(
+                            this,
+                            chatRoomName,
+                            new ChatRoomUpdateMessage(chatRoomName, message, this.getKadNode().getNode()),
+                            0));
+
 
         } else {
             try {
@@ -170,8 +268,8 @@ public class ChatUser {
         messageLog.log("joining to chatroom" + chatRoomName);
 
 
-        if(getInvolvedChatroomByName(chatRoomName) != null){
-            if(getInvolvedChatroomByName(chatRoomName).getParticipants().contains(new ChatRoomParticipant(this))){
+        if (getInvolvedChatroomByName(chatRoomName) != null) {
+            if (getInvolvedChatroomByName(chatRoomName).getParticipants().contains(new ChatRoomParticipant(this))) {
                 messageLog.log("Cant join to chat, where you already are");
                 return;
             }
@@ -207,9 +305,12 @@ public class ChatUser {
 
 
     public ChatRoom getInvolvedChatroomByName(String chatRoomName) {
-
         return chatRoomsInvolved.get(chatRoomName);
+    }
 
+    public void shutdown() {
+        this.getKadNode().getServer().shutdown();
+        this.getOp().setShutdown(true);
     }
 
     public void updateInvolvedChatroomByName(String chatRoomName, ChatRoom chatRoom) {

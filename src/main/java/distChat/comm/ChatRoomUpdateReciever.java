@@ -52,10 +52,14 @@ public class ChatRoomUpdateReciever implements Receiver {
             return;
         }
 
-        if (origin.getNodeId().toString().equals(MyUtils.nickNameToKademliaHex(chatRoom.getOwnerId()))) {
-            new ChatRoomUpdateBroadcastReciever(this.server, this.localNode, this.dht, this.config).receive(incoming, commId);
+        // add contact to routing table
+        me.getKadNode().getRoutingTable().insert(msg.getOrigin());
+
+        // if msg is from owner, or msg is about new owner
+        if (origin.getNodeId().toString().equals(MyUtils.nickNameToKademliaHex(chatRoom.getOwnerId())) || msg.getContent().getNewOwner() != null) {
+            new ChatRoomUpdateBroadcastReciever(this.localNode).receive(incoming, commId);
         } else {
-            new ChatRoomUpdateRequestReciever(this.server, this.localNode, this.dht, this.config).receive(incoming, commId);
+            new ChatRoomUpdateRequestReciever(this.localNode).receive(incoming, commId);
         }
 
 

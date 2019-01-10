@@ -1,31 +1,19 @@
 package distChat.comm;
 
-import distChat.model.ChatRoom;
 import distChat.model.ChatUser;
-import kademlia.KadConfiguration;
-import kademlia.KadServer;
 import kademlia.KademliaNode;
-import kademlia.dht.KademliaDHT;
-import kademlia.message.AcknowledgeMessage;
 import kademlia.message.Message;
 import kademlia.message.Receiver;
-import kademlia.node.Node;
 
 import java.io.IOException;
 
 public class ChatRoomUpdateBroadcastReciever implements Receiver {
 
-    private final KadServer server;
     private final KademliaNode localNode;
-    private final KademliaDHT dht;
-    private final KadConfiguration config;
     private ChatUser me;
 
-    public ChatRoomUpdateBroadcastReciever(KadServer server, KademliaNode localNode, KademliaDHT dht, KadConfiguration config) {
-        this.server = server;
+    public ChatRoomUpdateBroadcastReciever(KademliaNode localNode) {
         this.localNode = localNode;
-        this.dht = dht;
-        this.config = config;
         this.me = localNode.getChatUser();
     }
 
@@ -34,6 +22,7 @@ public class ChatRoomUpdateBroadcastReciever implements Receiver {
         me.log("I get a broadcast, updating my copy");
 
         var msg = (ChatRoomUpdateMessage) incoming;
+
 
         var myChatroomCopy = me.getChatRoomsInvolved().get(msg.getContent().getChatRoomName());
 
@@ -45,9 +34,12 @@ public class ChatRoomUpdateBroadcastReciever implements Receiver {
             myChatroomCopy.addParticipants(msg.getContent().getChatRoomParticipant());
         }
 
+        if (msg.getContent().getNewOwner() != null) {
+            myChatroomCopy.setOwnerId(msg.getContent().getNewOwner());
+        }
+
 
         me.updateInvolvedChatroomByName(myChatroomCopy.getName(), myChatroomCopy);
-
 
     }
 

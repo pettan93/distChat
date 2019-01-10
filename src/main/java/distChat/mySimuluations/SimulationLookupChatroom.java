@@ -1,10 +1,12 @@
 package distChat.mySimuluations;
 
+import distChat.UI.UIController;
 import distChat.factory.ChatNodeBuilder;
 import distChat.model.ChatRoom;
 import distChat.model.ChatUser;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class SimulationLookupChatroom {
 
@@ -24,12 +26,16 @@ public class SimulationLookupChatroom {
 
 
         ChatRoom chatRoom = new ChatRoom("Football", user1);
-        user1.storeChatroom(chatRoom);
+        user1.storeChatroom(chatRoom,true);
 
 
 //        System.out.println(user2);
         user2.lookupChatRoomByName("Football");
 //        System.out.println(user2);
+
+        UIController.buildUserController(Arrays.asList(user1, user2));
+        UIController.initManager();
+
 
 
     }

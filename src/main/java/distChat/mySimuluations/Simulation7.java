@@ -6,9 +6,11 @@ import distChat.model.ChatRoom;
 import distChat.model.ChatRoomMessage;
 import distChat.model.ChatRoomParticipant;
 import distChat.model.ChatUser;
+import kademlia.simulations.Simulation;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 
 public class Simulation7 {
 
@@ -40,12 +42,17 @@ public class Simulation7 {
 
         ChatRoom chatRoom = new ChatRoom("Football", user1);
         chatRoom.addMessage(new ChatRoomMessage(user1.getNickName(), "First message!"));
+        user1.storeChatroom(chatRoom,true);
 
-        user1.storeChatroom(chatRoom);
+        user2.joinChatroom(new ChatRoomParticipant(user2),chatRoom.getName(),user2.getContactByKademliaId(chatRoom.getOwnerId()));
+
+        user3.joinChatroom(new ChatRoomParticipant(user3),chatRoom.getName(),user3.getContactByKademliaId(chatRoom.getOwnerId()));
 
 
         UIController.buildUserController(Arrays.asList(user1, user2, user3, user4, user5, user6, user7));
         UIController.initManager();
+
+
 
 
     }
