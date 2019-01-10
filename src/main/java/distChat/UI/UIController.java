@@ -123,6 +123,11 @@ public class UIController {
         });
 
         app.get("/dht", ctx -> {
+
+            if (!chatUser.isNodeRunning()) {
+                ctx.redirect("/bootstrap");
+            }
+
             Map<String, Object> model = new HashMap<>();
             model.put("chatUser", chatUser);
             ctx.render("public/interface-dht.vm", model);
@@ -130,12 +135,22 @@ public class UIController {
 
 
         app.get("/routing", ctx -> {
+
+            if (!chatUser.isNodeRunning()) {
+                ctx.redirect("/bootstrap");
+            }
+
             Map<String, Object> model = new HashMap<>();
             model.put("chatUser", chatUser);
             ctx.render("public/interface-routing.vm", model);
         });
 
         app.get("/chatroommanager", ctx -> {
+
+            if (!chatUser.isNodeRunning()) {
+                ctx.redirect("/bootstrap");
+            }
+
             Map<String, Object> model = new HashMap<>();
             if (ctx.queryParam("chatRoomName") != null) {
                 model.put("searchQuery", ctx.queryParam("chatRoomName"));
@@ -146,6 +161,11 @@ public class UIController {
         });
 
         app.get("/joinchatroom", ctx -> {
+
+            if (!chatUser.isNodeRunning()) {
+                ctx.redirect("/bootstrap");
+            }
+
             Map<String, Object> model = new HashMap<>();
             if (ctx.queryParam("chatRoomName") != null) {
                 ActionProcessor.processJoinChatroom(chatUser, ctx.queryParam("chatRoomName"));
@@ -156,6 +176,11 @@ public class UIController {
 
 
         app.post("/chatroommanager", ctx -> {
+
+            if (!chatUser.isNodeRunning()) {
+                ctx.redirect("/bootstrap");
+            }
+
             Map<String, Object> model = new HashMap<>();
             model.put("chatUser", chatUser);
             if (ctx.formParam("newChatroomName") != null) {
@@ -184,6 +209,11 @@ public class UIController {
 
 
         app.get("/chatroom/:chatroomname", ctx -> {
+
+            if (!chatUser.isNodeRunning()) {
+                ctx.redirect("/bootstrap");
+            }
+
             Map<String, Object> model = new HashMap<>();
             model.put("chatUser", chatUser);
             model.put("chatRoomName", ctx.pathParam("chatroomname"));
