@@ -12,7 +12,6 @@ public class MessageLog {
 
     public MessageLog(String ownerNickname) {
         this.ownerNickname = ownerNickname;
-        this.log("Log created");
     }
 
     public void log(String msg){

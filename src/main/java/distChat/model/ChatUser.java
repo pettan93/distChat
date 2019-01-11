@@ -44,6 +44,8 @@ public class ChatUser {
                         new StoragerCheckerOperation(this)
                         ,new OwnerBackupSchedulerOperation(this)
         ));
+
+        this.log("UserNode ["+this.nickName+"] created, KademliaId ["+this.kadNode.getNode().getNodeId()+"]");
     }
 
 

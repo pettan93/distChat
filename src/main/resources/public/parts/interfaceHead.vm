@@ -37,6 +37,15 @@
 
                 <ul class="nav flex-column">
                     <li class="nav-item">
+                        <a class="nav-link" href="/contactmanager">
+                            <span data-feather="shopping-cart"></span>
+                            Contact manager
+                        </a>
+                    </li>
+                </ul>
+
+                <ul class="nav flex-column">
+                    <li class="nav-item">
                         <a class="nav-link" href="/logout">
                             <span data-feather="home"></span>
                             Logout

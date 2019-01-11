@@ -78,6 +78,7 @@ public class ChatNodeBuilder {
             chatUser.getKadNode().setChatUser(chatUser);
 
             this.port= null;
+            this.nickName= null;
             return chatUser;
         } catch (IOException e) {
             e.printStackTrace();

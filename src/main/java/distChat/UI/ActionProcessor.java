@@ -1,9 +1,16 @@
 package distChat.UI;
 
-import distChat.model.ChatRoom;
-import distChat.model.ChatRoomMessage;
-import distChat.model.ChatRoomParticipant;
-import distChat.model.ChatUser;
+import distChat.comm.MyNameIsReciever;
+import distChat.comm.WhoAreYouMessage;
+import distChat.model.*;
+import distChat.operation.NodeSearchOperation;
+import kademlia.node.KademliaId;
+import kademlia.node.Node;
+import org.apache.commons.codec.digest.DigestUtils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ActionProcessor {
 
@@ -47,5 +54,27 @@ public class ActionProcessor {
         chatUser.joinChatroom(new ChatRoomParticipant(chatUser),chatRoomName,ownerContact);
     }
 
+
+    public static List<ChatUserSearchResult> processSearchUsers(ChatUser chatUser, String contactName){
+
+
+        chatUser.log("Process search users query [" + contactName+ "]");
+
+        var lookupId = new KademliaId(DigestUtils.sha1(contactName));
+
+
+        var operation = new NodeSearchOperation(
+                chatUser.getKadNode().getServer(),
+                chatUser.getKadNode(),
+                lookupId,chatUser.getKadNode().getCurrentConfiguration());
+        try {
+            operation.execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return operation.getLookupedResult(chatUser);
+    }
 
 }

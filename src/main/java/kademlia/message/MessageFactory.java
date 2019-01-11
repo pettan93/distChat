@@ -1,10 +1,7 @@
 package kademlia.message;
 
 
-import distChat.comm.AreYouAwakeMessage;
-import distChat.comm.AreYouAwakeReciever;
-import distChat.comm.ChatRoomUpdateMessage;
-import distChat.comm.ChatRoomUpdateReciever;
+import distChat.comm.*;
 import kademlia.KadConfiguration;
 import kademlia.KadServer;
 import kademlia.KademliaNode;
@@ -19,28 +16,24 @@ import java.io.IOException;
  * @author Joshua Kissoon
  * @since 20140202
  */
-public class MessageFactory implements KademliaMessageFactory
-{
+public class MessageFactory implements KademliaMessageFactory {
 
     private final KademliaNode localNode;
     private final KademliaDHT dht;
     private final KadConfiguration config;
 
-    public MessageFactory(KademliaNode local, KademliaDHT dht, KadConfiguration config)
-    {
+    public MessageFactory(KademliaNode local, KademliaDHT dht, KadConfiguration config) {
         this.localNode = local;
         this.dht = dht;
         this.config = config;
     }
 
     @Override
-    public Message createMessage(byte code, DataInputStream in) throws IOException
-    {
+    public Message createMessage(byte code, DataInputStream in) throws IOException {
 
 //        System.out.println("create message " + code);
 
-        switch (code)
-        {
+        switch (code) {
             case AcknowledgeMessage.CODE:
                 return new AcknowledgeMessage(in);
             case ConnectMessage.CODE:
@@ -59,8 +52,10 @@ public class MessageFactory implements KademliaMessageFactory
                 return new StoreContentMessage(in);
             case ChatRoomUpdateMessage.CODE: // TODO PETTAN
                 return new ChatRoomUpdateMessage(in);
-            case AreYouAwakeMessage.CODE: // TODO PETTAN
-                return new AreYouAwakeMessage(in);
+            case WhoAreYouMessage.CODE: // TODO PETTAN
+                return new WhoAreYouMessage(in);
+            case MyNameIsMessage.CODE: // TODO PETTAN
+                return new MyNameIsMessage(in);
             default:
                 //System.out.println(this.localNode + " - No Message handler found for message. Code: " + code);
                 return new SimpleMessage(in);
@@ -69,10 +64,8 @@ public class MessageFactory implements KademliaMessageFactory
     }
 
     @Override
-    public Receiver createReceiver(byte code, KadServer server)
-    {
-        switch (code)
-        {
+    public Receiver createReceiver(byte code, KadServer server) {
+        switch (code) {
             case ConnectMessage.CODE:
                 return new ConnectReceiver(server, this.localNode);
             case ContentLookupMessage.CODE:
@@ -85,6 +78,10 @@ public class MessageFactory implements KademliaMessageFactory
                 return new ChatRoomUpdateReciever(server, this.localNode, this.dht, this.config);
             case AreYouAwakeMessage.CODE: // TODO PETTAN
                 return new AreYouAwakeReciever(this.localNode);
+            case WhoAreYouMessage.CODE:  // TODO PETTAN
+                return new WhoAreYouReciever(this.localNode);
+            case MyNameIsMessage.CODE:  // TODO PETTAN
+                return new MyNameIsReciever(this.localNode);
             default:
                 System.out.println("No receiver found for message. Code: " + code);
                 return new SimpleReceiver();

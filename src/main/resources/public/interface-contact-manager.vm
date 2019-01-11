@@ -1,0 +1,60 @@
+#parse("public/parts/interfaceHead.vm")
+
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">Contact manager</h1>
+    </div>
+
+
+    <h5>Search users on network</h5>
+    <br>
+
+    <form method="get" action="/contactmanager">
+        <div class="form-group">
+            <input type="text" class="form-control" name="contactName" required="required" placeholder="Try to search contact by name">
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <br>
+
+    #if( $searchQuery )
+
+        #if($resultArray)
+            <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                    <p>Search results for: $searchQuery</p>
+
+                    #foreach( $result in $resultArray )
+
+
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">$result.getNickname()</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">$result.getNode().getNodeId()</h6>
+                                <a href="#" class="card-link">Create private chatroom</a>
+                            </div>
+                        </div>
+
+                    #end
+
+
+                </div>
+            </div>
+        #else
+            <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                    <p>Search result for: $searchQuery</p>
+                    <p class="lead">No result</p>
+                </div>
+            </div>
+        #end
+    #end
+
+
+
+
+</main>
+
+
+#parse("public/parts/interfaceFooter.vm")

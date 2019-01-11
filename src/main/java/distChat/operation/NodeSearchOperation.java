@@ -1,5 +1,10 @@
-package kademlia.operation;
+package distChat.operation;
 
+import distChat.DistChatConfiguration;
+import distChat.comm.MyNameIsReciever;
+import distChat.comm.WhoAreYouMessage;
+import distChat.model.ChatUser;
+import distChat.model.ChatUserSearchResult;
 import kademlia.KadConfiguration;
 import kademlia.KadServer;
 import kademlia.KademliaNode;
@@ -11,6 +16,7 @@ import kademlia.message.Receiver;
 import kademlia.node.KademliaId;
 import kademlia.node.KeyComparator;
 import kademlia.node.Node;
+import kademlia.operation.Operation;
 
 import java.io.IOException;
 import java.util.*;
@@ -23,8 +29,7 @@ import java.util.*;
  * @author Joshua Kissoon
  * @created 20140219
  */
-public class NodeLookupOperation implements Operation, Receiver
-{
+public class NodeSearchOperation implements Operation, Receiver {
 
     /* Constants */
     private static final String UNASKED = "UnAsked";
@@ -45,7 +50,7 @@ public class NodeLookupOperation implements Operation, Receiver
     /* Used to sort nodes */
     private final Comparator comparator;
 
-    
+
     {
         messagesTransiting = new HashMap<>();
     }
@@ -56,8 +61,7 @@ public class NodeLookupOperation implements Operation, Receiver
      * @param lookupId  The ID for which to find nodes close to
      * @param config
      */
-    public NodeLookupOperation(KadServer server, KademliaNode localNode, KademliaId lookupId, KadConfiguration config)
-    {
+    public NodeSearchOperation(KadServer server, KademliaNode localNode, KademliaId lookupId, KadConfiguration config) {
         this.server = server;
         this.localNode = localNode;
         this.config = config;
@@ -73,16 +77,14 @@ public class NodeLookupOperation implements Operation, Receiver
     }
 
     /**
-     * @throws java.io.IOException
-     * @throws kademlia.exceptions.RoutingException
+     * @throws IOException
+     * @throws RoutingException
      */
     @Override
-    public synchronized void execute() throws IOException, RoutingException
-    {
-        try
-        {
+    public synchronized void execute() throws IOException, RoutingException {
+        try {
             /* Set the local node as already asked */
-            nodes.put(this.localNode.getNode(), ASKED);
+//            nodes.put(this.localNode.getNode(), ASKED);
 
             /**
              * We add all nodes here instead of the K-Closest because there may be the case that the K-Closest are offline
@@ -93,15 +95,11 @@ public class NodeLookupOperation implements Operation, Receiver
             /* If we haven't finished as yet, justWait for a maximum of config.operationTimeout() time */
             int totalTimeWaited = 0;
             int timeInterval = 10;     // We re-check every n milliseconds
-            while (totalTimeWaited < this.config.operationTimeout())
-            {
-                if (!this.askNodesorFinish())
-                {
+            while (totalTimeWaited < this.config.operationTimeout()){
+                if (!this.askNodesorFinish()) {
                     wait(timeInterval);
                     totalTimeWaited += timeInterval;
-                }
-                else
-                {
+                } else {
                     break;
                 }
             }
@@ -109,15 +107,12 @@ public class NodeLookupOperation implements Operation, Receiver
             /* Now after we've finished, we would have an idea of offline nodes, lets update our routing table */
             this.localNode.getRoutingTable().setUnresponsiveContacts(this.getFailedNodes());
 
-        }
-        catch (InterruptedException e)
-        {
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public List<Node> getClosestNodes()
-    {
+    public List<Node> getClosestNodes() {
         return this.closestNodes(ASKED);
     }
 
@@ -126,13 +121,10 @@ public class NodeLookupOperation implements Operation, Receiver
      *
      * @param list The list from which to add nodes
      */
-    public void addNodes(List<Node> list)
-    {
-        for (Node o : list)
-        {
+    public void addNodes(List<Node> list) {
+        for (Node o : list) {
             /* If this node is not in the list, add the node */
-            if (!nodes.containsKey(o))
-            {
+            if (!nodes.containsKey(o)) {
                 nodes.put(o, UNASKED);
             }
         }
@@ -141,27 +133,24 @@ public class NodeLookupOperation implements Operation, Receiver
     /**
      * Asks some of the K closest nodes seen but not yet queried.
      * Assures that no more than DefaultConfiguration.CONCURRENCY messages are in transit at a time
-     *
+     * <p>
      * This method should be called every time a reply is received or a timeout occurs.
-     *
+     * <p>
      * If all K closest nodes have been asked and there are no messages in transit,
      * the algorithm is finished.
      *
      * @return <code>true</code> if finished OR <code>false</code> otherwise
      */
-    private boolean askNodesorFinish() throws IOException
-    {
+    private boolean askNodesorFinish() throws IOException {
         /* If >= CONCURRENCY nodes are in transit, don't do anything */
-        if (this.config.maxConcurrentMessagesTransiting() <= this.messagesTransiting.size())
-        {
+        if (this.config.maxConcurrentMessagesTransiting() <= this.messagesTransiting.size()) {
             return false;
         }
 
         /* Get unqueried nodes among the K closest seen that have not FAILED */
         List<Node> unasked = this.closestNodesNotFailed(UNASKED);
 
-        if (unasked.isEmpty() && this.messagesTransiting.isEmpty())
-        {
+        if (unasked.isEmpty() && this.messagesTransiting.isEmpty()) {
             /* We have no unasked nodes nor any messages in transit, we're finished! */
             return true;
         }
@@ -170,8 +159,7 @@ public class NodeLookupOperation implements Operation, Receiver
          * Send messages to nodes in the list;
          * making sure than no more than CONCURRENCY messsages are in transit
          */
-        for (int i = 0; (this.messagesTransiting.size() < this.config.maxConcurrentMessagesTransiting()) && (i < unasked.size()); i++)
-        {
+        for (int i = 0; (this.messagesTransiting.size() < this.config.maxConcurrentMessagesTransiting()) && (i < unasked.size()); i++) {
             Node n = (Node) unasked.get(i);
 
             int comm = server.sendMessage(n, lookupMessage, this);
@@ -186,22 +174,17 @@ public class NodeLookupOperation implements Operation, Receiver
 
     /**
      * @param status The status of the nodes to return
-     *
      * @return The K closest nodes to the target lookupId given that have the specified status
      */
-    private List<Node> closestNodes(String status)
-    {
-        List<Node> closestNodes = new ArrayList<>(this.config.k());
-        int remainingSpaces = this.config.k();
+    private List<Node> closestNodes(String status) {
+        List<Node> closestNodes = new ArrayList<>(DistChatConfiguration.NODE_SEARCH_MAX);
+        int remainingSpaces = DistChatConfiguration.NODE_SEARCH_MAX;
 
-        for (Map.Entry e : this.nodes.entrySet())
-        {
-            if (status.equals(e.getValue()))
-            {
+        for (Map.Entry e : this.nodes.entrySet()) {
+            if (status.equals(e.getValue())) {
                 /* We got one with the required status, now add it */
                 closestNodes.add((Node) e.getKey());
-                if (--remainingSpaces == 0)
-                {
+                if (--remainingSpaces == 0) {
                     break;
                 }
             }
@@ -216,26 +199,20 @@ public class NodeLookupOperation implements Operation, Receiver
      * From those K, get those that have the specified status
      *
      * @param status The status of the nodes to return
-     *
      * @return A List of the closest nodes
      */
-    private List<Node> closestNodesNotFailed(String status)
-    {
-        List<Node> closestNodes = new ArrayList<>(this.config.k());
-        int remainingSpaces = this.config.k();
+    private List<Node> closestNodesNotFailed(String status) {
+        List<Node> closestNodes = new ArrayList<>(DistChatConfiguration.NODE_SEARCH_MAX);
+        int remainingSpaces = DistChatConfiguration.NODE_SEARCH_MAX;
 
-        for (Map.Entry<Node, String> e : this.nodes.entrySet())
-        {
-            if (!FAILED.equals(e.getValue()))
-            {
-                if (status.equals(e.getValue()))
-                {
+        for (Map.Entry<Node, String> e : this.nodes.entrySet()) {
+            if (!FAILED.equals(e.getValue())) {
+                if (status.equals(e.getValue())) {
                     /* We got one with the required status, now add it */
                     closestNodes.add(e.getKey());
                 }
 
-                if (--remainingSpaces == 0)
-                {
+                if (--remainingSpaces == 0) {
                     break;
                 }
             }
@@ -248,14 +225,11 @@ public class NodeLookupOperation implements Operation, Receiver
      * Receive and handle the incoming NodeReplyMessage
      *
      * @param comm
-     *
-     * @throws java.io.IOException
+     * @throws IOException
      */
     @Override
-    public synchronized void receive(Message incoming, int comm) throws IOException
-    {
-        if (!(incoming instanceof NodeReplyMessage))
-        {
+    public synchronized void receive(Message incoming, int comm) throws IOException {
+        if (!(incoming instanceof NodeReplyMessage)) {
             /* Not sure why we get a message of a different type here... @todo Figure it out. */
             return;
         }
@@ -281,17 +255,14 @@ public class NodeLookupOperation implements Operation, Receiver
      * A node does not respond or a packet was lost, we set this node as failed
      *
      * @param comm
-     *
-     * @throws java.io.IOException
+     * @throws IOException
      */
     @Override
-    public synchronized void timeout(int comm) throws IOException
-    {
+    public synchronized void timeout(int comm) throws IOException {
         /* Get the node associated with this communication */
         Node n = this.messagesTransiting.get(comm);
 
-        if (n == null)
-        {
+        if (n == null) {
             return;
         }
 
@@ -303,18 +274,53 @@ public class NodeLookupOperation implements Operation, Receiver
         this.askNodesorFinish();
     }
 
-    public List<Node> getFailedNodes()
-    {
+    public List<Node> getFailedNodes() {
         List<Node> failedNodes = new ArrayList<>();
 
-        for (Map.Entry<Node, String> e : this.nodes.entrySet())
-        {
-            if (e.getValue().equals(FAILED))
-            {
+        for (Map.Entry<Node, String> e : this.nodes.entrySet()) {
+            if (e.getValue().equals(FAILED)) {
                 failedNodes.add(e.getKey());
             }
         }
 
         return failedNodes;
+    }
+
+
+
+    public synchronized ArrayList<ChatUserSearchResult> getLookupedResult(ChatUser me){
+
+
+        ArrayList<ChatUserSearchResult> results = new ArrayList<>();
+        ArrayList<MyNameIsReciever> recievers = new ArrayList<>();
+
+        for (Node closestNode : getClosestNodes()) {
+            var reciever = new MyNameIsReciever(me.getKadNode());
+            try {
+                me.getKadNode().getServer().sendMessage(
+                        closestNode,
+                        new WhoAreYouMessage(me.getKadNode().getNode()),
+                        reciever);
+                recievers.add(reciever);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            wait(this.config.operationTimeout());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+        for (MyNameIsReciever reciever : recievers) {
+            results.add(reciever.getResult());
+        }
+
+
+
+        return results;
+
     }
 }

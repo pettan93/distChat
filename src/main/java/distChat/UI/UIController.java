@@ -42,42 +42,42 @@ public class UIController {
         app.post("/registrator", ctx -> {
 
             ChatUser newUser = null;
-            if (ctx.formParam("registerBootstrapNodeNickName") != null
-                    && ctx.formParam("registerBootstrapNodeIpPort") != null
-                    && ctx.formParam("registerNodeNickName") != null) {
+            if (ctx.formParam("registerNodeNickName") != null) {
 
-                var ipAdressString = ctx.formParam("registerBootstrapNodeIpPort").split(":")[0];
-                var port = ctx.formParam("registerBootstrapNodeIpPort").split(":")[1];
+                if (ctx.formParam("joinToExisting") == null) {
 
-
-                try {
                     newUser = ChatNodeBuilder.instance.setNickName(ctx.formParam("registerNodeNickName")).build();
-                    KademliaId id = new KademliaId(DigestUtils.sha1(ctx.formParam("registerBootstrapNodeNickName")));
-                    InetAddress ip = InetAddress.getByName(ipAdressString);
-                    Node target = new Node(id, ip, Integer.parseInt(port));
-                    newUser.getKadNode().bootstrap(target);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Map<String, Object> model = new HashMap<>();
-                    ctx.render("public/registrator.vm", model);
-                    if (newUser != null) {
-                        newUser.getKadNode().shutdown(false);
+
+                } else {
+
+                    var ipAdressString = ctx.formParam("registerBootstrapNodeIpPort").split(":")[0];
+                    var port = ctx.formParam("registerBootstrapNodeIpPort").split(":")[1];
+
+
+                    try {
+                        newUser = ChatNodeBuilder.instance.setNickName(ctx.formParam("registerNodeNickName")).build();
+                        KademliaId id = new KademliaId(DigestUtils.sha1(ctx.formParam("registerBootstrapNodeNickName")));
+                        InetAddress ip = InetAddress.getByName(ipAdressString);
+                        Node target = new Node(id, ip, Integer.parseInt(port));
+                        newUser.getKadNode().bootstrap(target);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Map<String, Object> model = new HashMap<>();
+                        ctx.render("public/registrator.vm", model);
+                        if (newUser != null) {
+                            newUser.getKadNode().shutdown(false);
+                        }
+                        return;
                     }
-                    return;
                 }
 
-
-//                UIController.chatUsers.add(newUser);
-
                 UIController.buildUserController(newUser);
-
                 Map<String, Object> model = new HashMap<>();
                 model.put("chatUser", newUser);
                 ctx.redirect("http://localhost:" + newUser.getUiPort() + "/");
                 ctx.render("public/interface-main.vm", model);
 
             }
-
         });
 
         app.get("/kill/:nickname", ctx -> {
@@ -160,6 +160,21 @@ public class UIController {
             ctx.render("public/interface-chatroom-manager.vm", model);
         });
 
+        app.get("/contactmanager", ctx -> {
+
+            if (!chatUser.isNodeRunning()) {
+                ctx.redirect("/bootstrap");
+            }
+
+            Map<String, Object> model = new HashMap<>();
+            if (ctx.queryParam("contactName") != null) {
+                model.put("searchQuery", ctx.queryParam("contactName"));
+                model.put("resultArray", ActionProcessor.processSearchUsers(chatUser, ctx.queryParam("contactName")));
+            }
+            model.put("chatUser", chatUser);
+            ctx.render("public/interface-contact-manager.vm", model);
+        });
+
         app.get("/joinchatroom", ctx -> {
 
             if (!chatUser.isNodeRunning()) {
@@ -191,19 +206,19 @@ public class UIController {
                 try {
 
                     ChatRoom chatRoom = new ChatRoom(newChatroomName, chatUser);
-                    chatUser.storeChatroom(chatRoom,true);
+                    chatUser.storeChatroom(chatRoom, true);
 
 
-                } catch (Exception e){
+                } catch (Exception e) {
 
-                    model.put("createError",true);
+                    model.put("createError", true);
                     ctx.render("public/interface-chatroom-manager.vm", model);
                     e.printStackTrace();
                     return;
                 }
 
 
-                ctx.redirect("/chatroom/"+newChatroomName);
+                ctx.redirect("/chatroom/" + newChatroomName);
             }
         });
 

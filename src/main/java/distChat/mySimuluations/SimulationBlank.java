@@ -1,5 +1,6 @@
 package distChat.mySimuluations;
 
+import distChat.MyUtils;
 import distChat.UI.UIController;
 import distChat.factory.ChatNodeBuilder;
 import distChat.model.ChatRoom;
@@ -20,10 +21,14 @@ public class SimulationBlank {
     public static void main(String[] args) throws IOException {
 
 
-        ChatUser user1 = chatNodeBuilder.setNickName("Petr").setPort(7001).build();
+//        ChatUser user1 = chatNodeBuilder.setNickName("Petr").setPort(7001).build();
+//
+//        UIController.buildUserController(Arrays.asList(user1));
+//        UIController.initManager();
 
-        UIController.buildUserController(Arrays.asList(user1));
-        UIController.initManager();
+
+        System.out.println(MyUtils.kademliaId("Anna"));
+
 
 
     }

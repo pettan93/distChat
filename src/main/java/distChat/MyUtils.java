@@ -1,5 +1,6 @@
 package distChat;
 
+import kademlia.node.KademliaId;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.math.BigInteger;
@@ -17,6 +18,12 @@ public class MyUtils {
         BigInteger bi = new BigInteger(1, bytes);
         return String.format("%0" + (bytes.length << 1) + "X", bi);
     }
+
+    public static KademliaId kademliaId(String name){
+        return new KademliaId(DigestUtils.sha1(name));
+    }
+
+
 
 
 

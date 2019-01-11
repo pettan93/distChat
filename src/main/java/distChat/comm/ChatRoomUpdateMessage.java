@@ -1,5 +1,6 @@
 package distChat.comm;
 
+import com.google.gson.Gson;
 import distChat.model.ChatRoomMessage;
 import distChat.model.ChatRoomParticipant;
 import distChat.model.ChatroomUpdateContent;
@@ -72,6 +73,7 @@ public class ChatRoomUpdateMessage implements Message, Serializable {
         }
     }
 
+
     @Override
     public final void fromStream(DataInputStream in) {
         try {
@@ -83,6 +85,7 @@ public class ChatRoomUpdateMessage implements Message, Serializable {
             e.printStackTrace();
         }
     }
+
 
     @Override
     public String toString() {
