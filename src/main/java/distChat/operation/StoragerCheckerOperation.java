@@ -4,19 +4,13 @@ import distChat.comm.AreYouAwakeConfirmReciever;
 import distChat.comm.AreYouAwakeMessage;
 import distChat.comm.ChatRoomUpdateMessage;
 import distChat.model.ChatRoom;
-import distChat.model.ChatRoomParticipant;
 import distChat.model.ChatUser;
-import kademlia.KadServer;
-import kademlia.dht.KademliaStorageEntry;
-import kademlia.dht.KademliaStorageEntryMetadata;
 import kademlia.exceptions.ContentNotFoundException;
 import kademlia.exceptions.RoutingException;
 import kademlia.node.Node;
 import kademlia.operation.Operation;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.*;
 
 public class StoragerCheckerOperation implements Operation, RepeatOperation {
 
@@ -45,10 +39,12 @@ public class StoragerCheckerOperation implements Operation, RepeatOperation {
                     return;
                 }
 
+//                me.log("StoragerCheckerOperation for chatroom "+chatroom.getName());
+
                 // is chatroom owner offline?
                 var ownerId = chatroom.getOwnerId();
 
-                var ownerNode = me.getContactByKademliaId(chatroom.getOwnerId());
+                var ownerNode = me.getStoredContactByKademliaId(chatroom.getOwnerId());
 
 
                 var areYouAwakeConfirmReciever = new AreYouAwakeConfirmReciever();

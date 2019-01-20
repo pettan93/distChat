@@ -1,5 +1,6 @@
 package distChat.factory;
 
+import distChat.UI.UIController;
 import distChat.model.ChatUser;
 import kademlia.JKademliaNode;
 import kademlia.node.KademliaId;

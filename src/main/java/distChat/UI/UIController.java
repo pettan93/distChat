@@ -1,5 +1,6 @@
 package distChat.UI;
 
+import distChat.MyUtils;
 import distChat.factory.ChatNodeBuilder;
 import distChat.model.ChatRoom;
 import distChat.model.ChatUser;
@@ -133,7 +134,6 @@ public class UIController {
             ctx.render("public/interface-dht.vm", model);
         });
 
-
         app.get("/routing", ctx -> {
 
             if (!chatUser.isNodeRunning()) {
@@ -189,8 +189,7 @@ public class UIController {
             ctx.redirect("/");
         });
 
-
-        app.post("/chatroommanager", ctx -> {
+        app.post("/chatroommanager/new", ctx -> {
 
             if (!chatUser.isNodeRunning()) {
                 ctx.redirect("/bootstrap");
@@ -217,10 +216,49 @@ public class UIController {
                     return;
                 }
 
-
                 ctx.redirect("/chatroom/" + newChatroomName);
             }
         });
+
+
+        app.get("/chatroommanager/newprivate/:withwho", ctx -> {
+
+            if (!chatUser.isNodeRunning()) {
+                ctx.redirect("/bootstrap");
+            }
+
+
+            Map<String, Object> model = new HashMap<>();
+            model.put("chatUser", chatUser);
+            if (ctx.pathParam("withwho").length() > 0) {
+
+                var withWho = ctx.pathParam("withwho");
+
+                chatUser.log("Creating new private chatroom with [" + withWho + "]");
+
+                try {
+
+                    String newChatroomName = MyUtils.createPrivateChatroomName(chatUser.getNickName(),withWho);
+                    ChatRoom chatRoom = new ChatRoom(newChatroomName, chatUser);
+                    chatUser.storeChatroom(chatRoom, true);
+
+
+                    ActionProcessor.processInviteUser(chatUser,withWho,chatRoom.getName());
+
+
+                    ctx.redirect("/chatroom/" + newChatroomName);
+                } catch (Exception e) {
+
+                    model.put("createError", true);
+                    ctx.render("public/interface-contact-manager.vm", model);
+                    e.printStackTrace();
+                    return;
+                }
+
+
+            }
+        });
+
 
 
         app.get("/chatroom/:chatroomname", ctx -> {
@@ -242,7 +280,6 @@ public class UIController {
             ctx.redirect("/chatroom/" + ctx.pathParam("chatroomname"));
         });
 
-
         app.get("/bootstrap", ctx -> {
             if (chatUser.isNodeRunning()) {
                 ctx.redirect("/");
@@ -258,20 +295,19 @@ public class UIController {
             ctx.redirect("/bootstrap");
         });
 
-
         app.post("/bootstrap", ctx -> {
 
             if (chatUser.isNodeRunning()) {
                 ctx.redirect("/");
                 return;
             }
-            if (ctx.formParam("registerBootstrapNodeNickName") != null && ctx.formParam("registerBootstrapNodeIpPort") != null) {
 
-                JKademliaNode newMyNode = new JKademliaNode(
-                        chatUser.getKadNode().getOwnerId(),
-                        chatUser.getKadNode().getNode().getNodeId(),
-                        chatUser.getKadNode().getPort());
+            JKademliaNode newMyNode = new JKademliaNode(
+                    chatUser.getKadNode().getOwnerId(),
+                    chatUser.getKadNode().getNode().getNodeId(),
+                    chatUser.getKadNode().getPort());
 
+            if (ctx.formParam("joinToExisting") != null) {
                 try {
                     var ipAdressString = ctx.formParam("registerBootstrapNodeIpPort").split(":")[0];
                     var port = ctx.formParam("registerBootstrapNodeIpPort").split(":")[1];
@@ -289,12 +325,14 @@ public class UIController {
                     newMyNode.shutdown(false);
                     return;
                 }
-                chatUser.reconnect(newMyNode);
             }
+            chatUser.reconnect(newMyNode);
 
 
             ctx.redirect("/");
         });
+
+
 
 
         new UIRefresherResource(app, chatUser).buildResource();

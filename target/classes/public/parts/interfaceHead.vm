@@ -25,6 +25,12 @@
         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
             <div class="sidebar-sticky">
 
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>Network</span>
+                    <a class="d-flex align-items-center text-muted" href="#">
+                        <span data-feather="plus-circle"></span>
+                    </a>
+                </h6>
 
                 <ul class="nav flex-column">
                     <li class="nav-item">
@@ -40,15 +46,6 @@
                         <a class="nav-link" href="/contactmanager">
                             <span data-feather="shopping-cart"></span>
                             Contact manager
-                        </a>
-                    </li>
-                </ul>
-
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/logout">
-                            <span data-feather="home"></span>
-                            Logout
                         </a>
                     </li>
                 </ul>
@@ -93,6 +90,24 @@
                         <a class="nav-link" href="/routing">
                             <span data-feather="shopping-cart"></span>
                             Routing table
+                        </a>
+                    </li>
+                </ul>
+
+
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>Actions</span>
+                    <a class="d-flex align-items-center text-muted" href="#">
+                        <span data-feather="plus-circle"></span>
+                    </a>
+                </h6>
+
+
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">
+                            <span data-feather="home"></span>
+                            Logout
                         </a>
                     </li>
                 </ul>

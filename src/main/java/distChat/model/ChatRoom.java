@@ -164,6 +164,17 @@ public class ChatRoom implements KadContent, Serializable {
     }
 
 
+    public String toJson() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
+
+    public static ChatRoom fromJson(String data) {
+        Gson gson = new Gson();
+        return gson.fromJson(data, ChatRoom.class);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

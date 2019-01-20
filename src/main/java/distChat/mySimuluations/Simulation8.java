@@ -42,9 +42,9 @@ public class Simulation8 {
         chatRoom.addMessage(new ChatRoomMessage(user1.getNickName(), "First message!"));
         user1.storeChatroom(chatRoom,true);
 
-        user2.joinChatroom(new ChatRoomParticipant(user2),chatRoom.getName(),user2.getContactByKademliaId(chatRoom.getOwnerId()));
+        user2.joinChatroom(new ChatRoomParticipant(user2),chatRoom.getName(),user2.getStoredContactByKademliaId(chatRoom.getOwnerId()));
 
-        user3.joinChatroom(new ChatRoomParticipant(user3),chatRoom.getName(),user3.getContactByKademliaId(chatRoom.getOwnerId()));
+        user3.joinChatroom(new ChatRoomParticipant(user3),chatRoom.getName(),user3.getStoredContactByKademliaId(chatRoom.getOwnerId()));
 
 
 
@@ -58,8 +58,8 @@ public class Simulation8 {
 
         SimulationUtils.justWait(2);
 
-        var ownerContact = user2.getContactByKademliaId(chatRoom.getOwnerId());
-        user2.sendMessage(new ChatRoomMessage(user2.getNickName(), "Alive?!"),chatRoom.getName(),ownerContact,true);
+        var ownerContact = user2.getStoredContactByKademliaId(chatRoom.getOwnerId());
+        user2.sendChatRoomMessage(new ChatRoomMessage(user2.getNickName(), "Alive?!"),chatRoom.getName(),ownerContact,true);
 
     }
 

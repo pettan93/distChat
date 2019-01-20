@@ -308,7 +308,7 @@ public class NodeSearchOperation implements Operation, Receiver {
         }
 
         try {
-            wait(this.config.operationTimeout());
+            wait((this.config.operationTimeout() / 2));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

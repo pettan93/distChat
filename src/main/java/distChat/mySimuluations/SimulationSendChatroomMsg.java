@@ -56,14 +56,14 @@ public class SimulationSendChatroomMsg {
 //        var msg = new ChatRoomMessage(
 //                user2.getNickName(),
 //                "ahoj, tvoje Anna");
-//        var chatRoomOwner = user2.getContactByKademliaId(localChatRoom.getOwnerId());
+//        var chatRoomOwner = user2.getStoredContactByKademliaId(localChatRoom.getOwnerId());
 
 
 //        SimulationUtils.justWait(2);
 
 //        user1.getKadNode().shutdown(false);
 
-//        user2.sendMessage(msg,
+//        user2.sendChatRoomMessage(msg,
 //                localChatRoom.getName(),
 //                chatRoomOwner,
 //                true);

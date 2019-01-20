@@ -6,11 +6,9 @@ import distChat.model.ChatRoom;
 import distChat.model.ChatRoomMessage;
 import distChat.model.ChatRoomParticipant;
 import distChat.model.ChatUser;
-import kademlia.simulations.Simulation;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Date;
 
 public class Simulation7 {
 
@@ -44,9 +42,9 @@ public class Simulation7 {
         chatRoom.addMessage(new ChatRoomMessage(user1.getNickName(), "First message!"));
         user1.storeChatroom(chatRoom,true);
 
-        user2.joinChatroom(new ChatRoomParticipant(user2),chatRoom.getName(),user2.getContactByKademliaId(chatRoom.getOwnerId()));
+        user2.joinChatroom(new ChatRoomParticipant(user2),chatRoom.getName(),user2.getStoredContactByKademliaId(chatRoom.getOwnerId()));
 
-        user3.joinChatroom(new ChatRoomParticipant(user3),chatRoom.getName(),user3.getContactByKademliaId(chatRoom.getOwnerId()));
+        user3.joinChatroom(new ChatRoomParticipant(user3),chatRoom.getName(),user3.getStoredContactByKademliaId(chatRoom.getOwnerId()));
 
 
         UIController.buildUserController(Arrays.asList(user1, user2, user3, user4, user5, user6, user7));

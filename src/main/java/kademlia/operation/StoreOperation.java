@@ -55,14 +55,11 @@ public class StoreOperation implements Operation
 
         // TODO Pettan
         if(storageEntry.getContentMetadata().getType().equals(ChatRoom.TYPE)) {
-            localNode.getChatUser().log("intent to store on " + nodes.size() + " nodes ");
+//            localNode.getChatUser().log("intent to store on " + nodes.size() + " nodes ");
             var chatroom = new ChatRoom().fromSerializedForm(storageEntry.getContent());
             chatroom.setStoragers(nodes);
             this.storageEntry = new JKademliaStorageEntry(chatroom);
         }
-
-
-
 
 
 

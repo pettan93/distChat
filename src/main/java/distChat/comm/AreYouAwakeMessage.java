@@ -11,7 +11,7 @@ public class AreYouAwakeMessage implements Message {
 
 
     private Node origin;
-    public static final byte CODE = 0x59;
+    public static final byte CODE = 0x43;
 
     public AreYouAwakeMessage(Node origin)
     {

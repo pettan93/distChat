@@ -1,10 +1,8 @@
 package distChat.operation;
 
 import distChat.comm.ChatRoomUpdateMessage;
-import distChat.model.ChatRoom;
 import distChat.model.ChatRoomParticipant;
 import distChat.model.ChatUser;
-import kademlia.KadServer;
 import kademlia.exceptions.ContentNotFoundException;
 import kademlia.exceptions.RoutingException;
 import kademlia.operation.Operation;
@@ -82,7 +80,7 @@ public class OwnerChatroomUpdateOperation implements Operation, BlockingOperatio
                 continue;
             }
 
-            var broadcastTarget = me.getContactByKademliaId(participant.getNickName());
+            var broadcastTarget = me.getStoredContactByKademliaId(participant.getNickName());
 
             me.log("Comm[" + commId + "] - sending broadcast to participant " + participant.getNickName());
 

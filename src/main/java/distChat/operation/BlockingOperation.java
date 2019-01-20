@@ -6,8 +6,8 @@ import java.io.IOException;
 
 public interface BlockingOperation {
 
-    public void block();
+    void block();
 
-    public void release();
+    void release();
 
 }

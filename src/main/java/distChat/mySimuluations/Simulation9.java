@@ -38,24 +38,9 @@ public class Simulation9 {
         user6.bootstrap(user5);
         user7.bootstrap(user5);
 
-        SimulationUtils.justWait(2);
-
-        ChatRoom chatRoom = new ChatRoom("Football", user1);
-        chatRoom.addMessage(new ChatRoomMessage(user1.getNickName(), "First message!"));
-        user1.storeChatroom(chatRoom, true);
-
-        SimulationUtils.justWait(2);
-
-        user2.joinChatroom(new ChatRoomParticipant(user2), chatRoom.getName(), user2.getContactByKademliaId(chatRoom.getOwnerId()));
-
-//        SimulationUtils.justWait(3);
-
-//        user1.getKadNode().shutdown(false);
-
 
         UIController.buildUserController(Arrays.asList(user1, user2, user3, user4, user5, user6, user7));
         UIController.initManager();
-
 
     }
 

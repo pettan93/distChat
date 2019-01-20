@@ -32,7 +32,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">$result.getNickname()</h5>
                                 <h6 class="card-subtitle mb-2 text-muted">$result.getNode().getNodeId()</h6>
-                                <a href="#" class="card-link">Create private chatroom</a>
+                                <a href="/chatroommanager/newprivate/$result.getNickname()" class="card-link">Create private chatroom</a>
                             </div>
                         </div>
 

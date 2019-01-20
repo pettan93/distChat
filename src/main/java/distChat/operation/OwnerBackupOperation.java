@@ -22,7 +22,7 @@ public class OwnerBackupOperation implements Operation {
 
 
         for (String s : me.getChatRoomsOwned().keySet()) {
-            me.log("backuping chatroom "+s);
+            me.log("backuping chatroom ["+s+"]");
 
             me.storeChatroom(me.getChatRoomsOwned().get(s),false);
 

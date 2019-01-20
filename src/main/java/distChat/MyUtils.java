@@ -1,5 +1,6 @@
 package distChat;
 
+import distChat.model.ChatUser;
 import kademlia.node.KademliaId;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -24,6 +25,13 @@ public class MyUtils {
     }
 
 
+
+    public static String createPrivateChatroomName(String user1, String user2){
+
+        return user1 + " & " + user2;
+//        return "bongo";
+
+    }
 
 
 

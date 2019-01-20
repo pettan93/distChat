@@ -10,7 +10,7 @@ import java.io.IOException;
 public class WhoAreYouMessage implements Message {
 
     private Node origin;
-    public static final byte CODE = 0x61;
+    public static final byte CODE = 0x42;
 
     public WhoAreYouMessage(Node origin)
     {

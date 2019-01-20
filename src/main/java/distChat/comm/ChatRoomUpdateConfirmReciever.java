@@ -1,7 +1,5 @@
 package distChat.comm;
 
-import distChat.model.ChatRoom;
-import distChat.model.ChatRoomMessage;
 import distChat.model.ChatUser;
 import distChat.model.ChatroomUpdateContent;
 import kademlia.KadConfiguration;
@@ -54,8 +52,8 @@ public class ChatRoomUpdateConfirmReciever implements Receiver {
             Runnable task = () -> {
                 var me = localNode.getChatUser();
                 var localChatRoom = me.getInvolvedChatroomByName("Football");
-                var chatRoomOwner = me.getContactByKademliaId(localChatRoom.getOwnerId());
-                me.sendMessage(msg.getChatRoomMessage(), msg.getChatRoomName(), chatRoomOwner, false);
+                var chatRoomOwner = me.getStoredContactByKademliaId(localChatRoom.getOwnerId());
+                me.sendChatRoomMessage(msg.getChatRoomMessage(), msg.getChatRoomName(), chatRoomOwner, false);
             };
             Thread thread = new Thread(task);
             thread.start();

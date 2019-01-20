@@ -39,10 +39,11 @@
         <div class="col-4">
             <p></p>
             <h5>Participants</h5>
-            #foreach( $participant in $chatRoom.getParticipants() )
-                <p>$participant.getNickName()</p>
-            #end
-
+            <p>
+                #foreach( $participant in $chatRoom.getParticipants() )
+                    $participant.getNickName(),
+                #end
+            </p>
             <br>
             <h6>Info</h6>
             <small>$chatRoom.getStatusText()</small>

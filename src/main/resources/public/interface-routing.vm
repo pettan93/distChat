@@ -18,12 +18,17 @@
                 </thead>
                 <tbody>
 
-
-
                     #foreach($contact in $chatUser.getContacts())
 
                     <tr>
-                        <td>$contact.getNode().getNodeId()</td>
+                        <td>
+                            $contact.getNode().getNodeId()
+
+                            #if( $contact.getNode().getNodeId() == $chatUser.getKadNode().getNode().getNodeId())
+                                (me)
+                            #end
+
+                        </td>
                         <td>$contact.getNode().getSocketAddress()</td>
                     </tr>
 
@@ -34,8 +39,6 @@
 
         </div>
     </div>
-
-
 
 
 </main>

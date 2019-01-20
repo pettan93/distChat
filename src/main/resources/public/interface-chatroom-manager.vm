@@ -45,7 +45,7 @@
 
     <h5>Create new chatroom</h5>
     <br>
-    <form method="post" action="/chatroommanager">
+    <form method="post" action="/chatroommanager/new">
         <div class="form-group">
             <input type="text" class="form-control" required="required" name="newChatroomName" placeholder="Enter chatroom name">
         </div>

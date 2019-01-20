@@ -3,6 +3,7 @@ package distChat.model;
 import distChat.MessageLog;
 import distChat.comm.ChatRoomUpdateConfirmReciever;
 import distChat.comm.ChatRoomUpdateMessage;
+import distChat.comm.JoinPrivateChatMessage;
 import distChat.operation.OwnerBackupSchedulerOperation;
 import distChat.operation.OwnerChatroomUpdateOperation;
 import distChat.operation.StoragerCheckerOperation;
@@ -230,7 +231,7 @@ public class ChatUser {
         return foundedChatRoom;
     }
 
-    public void sendMessage(ChatRoomMessage message, String chatRoomName, Contact targetContact, Boolean firstAttempt) {
+    public void sendChatRoomMessage(ChatRoomMessage message, String chatRoomName, Contact targetContact, Boolean firstAttempt) {
 
         messageLog.log("Sending new message to chatroom" + chatRoomName + " to contact " + targetContact.getNode().getNodeId());
 
@@ -329,7 +330,7 @@ public class ChatUser {
         return contacts;
     }
 
-    public Contact getContactByKademliaId(String kademliaIdString) {
+    public Contact getStoredContactByKademliaId(String kademliaIdString) {
 
         KademliaId kademliaId = new KademliaId((DigestUtils.sha1(kademliaIdString)));
 
@@ -338,4 +339,19 @@ public class ChatUser {
                 .findAny()
                 .orElse(null);
     }
+
+    public void inviteToPrivateChat(Contact targetContact, String chatroomname){
+
+        try {
+            getKadNode().getServer().sendMessage(
+                    targetContact.getNode(),
+                    new JoinPrivateChatMessage(chatroomname,this.kadNode.getNode())
+                    ,null);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }

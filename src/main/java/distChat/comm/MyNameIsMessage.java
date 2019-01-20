@@ -16,7 +16,7 @@ public class MyNameIsMessage implements Message {
 
     private String nickname;
 
-    public static final byte CODE = 0x60;
+    public static final byte CODE = 0x41;
 
     public MyNameIsMessage(Node origin, String nickname) {
         this.origin = origin;

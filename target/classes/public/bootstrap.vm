@@ -44,14 +44,37 @@
                         <br>
                         <div class="info-form">
                             <form action="/bootstrap" method="post" class="form-inlin justify-content-center">
+
                                 <div class="form-group">
-                                    <input type="text" class="form-control" name="registerBootstrapNodeNickName"
-                                           placeholder="Enter bootstrap node nickname">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="joinToExisting"
+                                               onclick="fff()" name="joinToExisting" checked="checked">
+                                        <label class="form-check-label" for="exampleCheck1">Join to existing
+                                            network</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="registerBootstrapNodeNickName"
+                                           name="registerBootstrapNodeNickName"
+                                           placeholder="Enter bootstrap node nickname"
+                                           required="required">
                                 </div>
                                 <div class="form-group">
-                                    <input type="text" class="form-control" name="registerBootstrapNodeIpPort"
-                                           placeholder="Enter bootstrap node adress (port:ip)">
+                                    <input type="text" class="form-control" id="registerBootstrapNodeIpPort"
+                                           name="registerBootstrapNodeIpPort"
+                                           placeholder="Enter bootstrap node adress (port:ip)"
+                                           required="required">
                                 </div>
+
+##                                <div class="form-group">
+##                                    <input type="text" class="form-control" name="registerBootstrapNodeNickName"
+##                                           placeholder="Enter bootstrap node nickname">
+##                                </div>
+##                                <div class="form-group">
+##                                    <input type="text" class="form-control" name="registerBootstrapNodeIpPort"
+##                                           placeholder="Enter bootstrap node adress (port:ip)">
+##                                </div>
                                 <button type="submit" class="btn btn-success ">Join network!</button>
                             </form>
                         </div>
@@ -74,6 +97,14 @@
 
 </div>
 </div>
+
+<script>
+    function fff() {
+        $('#registerBootstrapNodeNickName').prop('disabled', !$('#joinToExisting').is(':checked'));
+        $('#registerBootstrapNodeIpPort').prop('disabled', !$('#joinToExisting').is(':checked'));
+    }
+
+</script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
         integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"

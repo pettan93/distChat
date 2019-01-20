@@ -31,7 +31,8 @@ public class OperationScheduler {
     private void initQueueThread() {
         Runnable task = () -> {
             while (!shutdown) {
-                if (!operationQueue.isEmpty()) {
+
+                if (!operationQueue.isEmpty() && !operationLock) {
                     try {
                         operationQueue.poll().execute();
                     } catch (IOException e) {
@@ -43,6 +44,7 @@ public class OperationScheduler {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
             }
         };
         new Thread(task).start();

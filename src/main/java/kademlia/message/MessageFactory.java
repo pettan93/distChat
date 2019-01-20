@@ -54,11 +54,17 @@ public class MessageFactory implements KademliaMessageFactory {
                 return new ChatRoomUpdateMessage(in);
             case WhoAreYouMessage.CODE: // TODO PETTAN
                 return new WhoAreYouMessage(in);
+            case AreYouAwakeMessage.CODE: // TODO PETTAN
+                return new AreYouAwakeMessage(in);
+            case JoinPrivateChatMessage.CODE: // TODO PETTAN
+                return new JoinPrivateChatMessage(in);
             case MyNameIsMessage.CODE: // TODO PETTAN
                 return new MyNameIsMessage(in);
-            default:
-                //System.out.println(this.localNode + " - No Message handler found for message. Code: " + code);
+            default: {
+                System.out.println(this.localNode.getChatUser().getNickName() + " - No Message handler found for message. Code: " + code);
                 return new SimpleMessage(in);
+            }
+
 
         }
     }
@@ -82,6 +88,9 @@ public class MessageFactory implements KademliaMessageFactory {
                 return new WhoAreYouReciever(this.localNode);
             case MyNameIsMessage.CODE:  // TODO PETTAN
                 return new MyNameIsReciever(this.localNode);
+            case JoinPrivateChatMessage.CODE:  // TODO PETTAN
+                return new JoinPrivateChatReciever(this.localNode);
+
             default:
                 System.out.println("No receiver found for message. Code: " + code);
                 return new SimpleReceiver();
