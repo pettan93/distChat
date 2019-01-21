@@ -1,38 +1,58 @@
 package distChat;
 
 
+import distChat.UI.UIController;
+import distChat.factory.ChatNodeBuilder;
+import distChat.model.ChatUser;
 import io.javalin.Javalin;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Main {
 
-
+    public static ChatNodeBuilder chatNodeBuilder;
 
 
     public static void main(String[] args) {
-        Controller controller = new Controller();
+        String ip;
+        Integer nodesCount;
 
-        Javalin app = Javalin.create()
-                .enableStaticFiles("/public")
-                .enableRouteOverview("/path")
-                .start(8080);
+        try {
+            ip = args[0];
+            nodesCount = Integer.parseInt(args[1]);
+        } catch (Exception e) {
+            System.out.println("Bad program arguments");
+            return;
+        }
 
-        app.get("/interface", ctx -> {
-            Map<String, Object> model = new HashMap<>();
-            ctx.render("public/interface.vm", model);
-        });
+        chatNodeBuilder = new ChatNodeBuilder(
+                ip,
+                7000,
+                8000);
 
-//        app.get("/manager", ctx -> {
-//            Map<String, Object> model = new HashMap<>();
-//            ctx.render("public/manager.vm", model);
-//        });
+        List<ChatUser> nodes = new ArrayList<>();
+
+        ChatUser rootNode = null;
+
+        for (int i = 0; i < nodesCount; i++) {
+            chatNodeBuilder.reset();
+            ChatUser nextNode = chatNodeBuilder.build();
+            if (rootNode == null) {
+                rootNode = nextNode;
+            } else {
+                nextNode.bootstrap(rootNode);
+            }
+
+
+            nodes.add(nextNode);
+        }
+
+        UIController.buildUserController(nodes);
+        UIController.initManager();
+
+
     }
-
-
-
 
 
 }

@@ -6,6 +6,7 @@ import kademlia.operation.Operation;
 
 import java.io.IOException;
 
+// operation which stores chatroom to kademlia network
 public class OwnerBackupOperation implements Operation {
 
     private ChatUser me;

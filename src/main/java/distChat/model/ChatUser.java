@@ -46,7 +46,7 @@ public class ChatUser {
                         ,new OwnerBackupSchedulerOperation(this)
         ));
 
-        this.log("UserNode ["+this.nickName+"] created, KademliaId ["+this.kadNode.getNode().getNodeId()+"]");
+        this.log("Node created, KademliaId ["+this.kadNode.getNode().getNodeId()+"]");
     }
 
 

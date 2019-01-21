@@ -1,5 +1,7 @@
 package distChat.comm;
 
+import distChat.MyUtils;
+import distChat.model.ChatRoomParticipant;
 import distChat.model.ChatUser;
 import distChat.model.ChatroomUpdateContent;
 import kademlia.KadConfiguration;
@@ -8,6 +10,7 @@ import kademlia.KademliaNode;
 import kademlia.dht.KademliaDHT;
 import kademlia.message.Message;
 import kademlia.message.Receiver;
+import kademlia.operation.NodeLookupOperation;
 
 import java.io.IOException;
 
@@ -47,13 +50,42 @@ public class ChatRoomUpdateConfirmReciever implements Receiver {
 
 
         if (firstAttempt) {
-            me.log("lookuping chatroom and sending msg again");
+            me.log("lookuping chatroom (because of new owner) and sending msg again");
 
             Runnable task = () -> {
                 var me = localNode.getChatUser();
                 var localChatRoom = me.getInvolvedChatroomByName("Football");
-                var chatRoomOwner = me.getStoredContactByKademliaId(localChatRoom.getOwnerId());
-                me.sendChatRoomMessage(msg.getChatRoomMessage(), msg.getChatRoomName(), chatRoomOwner, false);
+                var chatRoomOwnerId = localChatRoom.getOwnerId();
+                var ownerContact = me.getStoredContactByKademliaId(chatRoomOwnerId);
+
+                if (ownerContact != null) {
+                    me.log("i have new owner contact ! sending msg to him");
+                    me.sendChatRoomMessage(msg.getChatRoomMessage(), msg.getChatRoomName(), ownerContact, false);
+
+                } else {
+                    me.log("I dont have contact for new chatroom owner! lookuping..");
+                    NodeLookupOperation ndlo = new NodeLookupOperation(
+                            me.getKadNode().getServer(),
+                            me.getKadNode(),
+                            MyUtils.kademliaId(chatRoomOwnerId),
+                            me.getKadNode().getCurrentConfiguration());
+                    try {
+                        ndlo.execute();
+                        ownerContact = me.getStoredContactByKademliaId(chatRoomOwnerId);
+
+                        if (ownerContact != null) {
+                            me.log("i lookuped new owner ! sending msg to him");
+                            me.sendChatRoomMessage(msg.getChatRoomMessage(), msg.getChatRoomName(), ownerContact, false);
+                        } else {
+                            me.log("MESSAGE LOST");
+                        }
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
             };
             Thread thread = new Thread(task);
             thread.start();

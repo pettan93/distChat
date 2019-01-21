@@ -11,7 +11,11 @@ import kademlia.node.Node;
 import kademlia.operation.Operation;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+// action which perform storagers periodically to check if owner is alive
+// if not, one of storagers becomes owner
 public class StoragerCheckerOperation implements Operation, RepeatOperation {
 
     private ChatUser me;
@@ -25,6 +29,10 @@ public class StoragerCheckerOperation implements Operation, RepeatOperation {
     public void execute() throws IOException, RoutingException {
 //        me.log("StoragerCheckerOperation --->");
 
+        // if I am dead, do nothing
+        if (!me.getKadNode().getServer().isRunning()) {
+            return;
+        }
 
         var chatrooms = me.getStoredChatrooms();
 
@@ -35,6 +43,7 @@ public class StoragerCheckerOperation implements Operation, RepeatOperation {
 
             for (ChatRoom chatroom : chatrooms) {
 
+                // if i am owner, then no need to check if i am alive
                 if (chatroom.getOwnerId().equals(me.getNickName())) {
                     return;
                 }
@@ -43,10 +52,7 @@ public class StoragerCheckerOperation implements Operation, RepeatOperation {
 
                 // is chatroom owner offline?
                 var ownerId = chatroom.getOwnerId();
-
                 var ownerNode = me.getStoredContactByKademliaId(chatroom.getOwnerId());
-
-
                 var areYouAwakeConfirmReciever = new AreYouAwakeConfirmReciever();
                 me.getKadNode().getServer().sendMessage(
                         ownerNode.getNode(),
@@ -54,15 +60,48 @@ public class StoragerCheckerOperation implements Operation, RepeatOperation {
                         areYouAwakeConfirmReciever);
                 var ownerAlive = areYouAwakeConfirmReciever.getResult();
 
+                //
+                if (!ownerAlive) { // owner not alive!
+                    me.log(" " + ownerId + " of chatroom " + chatroom.getName() + " not alive");
 
-                if (!ownerAlive) {
-                    me.log(" " + ownerId + " of chatroom " +  chatroom.getName() +" not alive");
-                    var amINextOwner = amINextOwner(chatroom);
+                    // asks all storagers if they are alive
+                    // create array of dead storagers
+                    var deadStoragers = new ArrayList<Node>();
+
+
+                    me.log("try contact storagers");
+
+
+                    // let contact every other storages (not me) if is alive
+                    for (Node n : chatroom.getStoragers()) {
+
+                        // if iterating me, i m alive
+                        if (n.getNodeId().equals(me.getKadNode().getNode().getNodeId())) {
+                            continue;
+                        }
+
+                        var storagerAwakeReciever = new AreYouAwakeConfirmReciever();
+                        me.getKadNode().getServer().sendMessage(
+                                n,
+                                new AreYouAwakeMessage(
+                                        me.getKadNode().getNode()), storagerAwakeReciever);
+                        var storagerAwake = storagerAwakeReciever.getResult();
+                        if (!storagerAwake) {
+                            me.log("storager[" + n.getNodeId() + "] is DEAD");
+                            deadStoragers.add(n);
+                        }
+                    }
+
+
+                    me.log("DeadStoragers = " + deadStoragers);
+
+                    // let choose new owner from storagers which are alive
+                    var amINextOwner = amINextOwner(chatroom, deadStoragers);
 
                     if (amINextOwner) {
                         me.log(" I am next owner! ");
-                        chatroom.setOwnerId(me.getNickName());
 
+                        chatroom.setOwnerId(me.getNickName());
                         me.getOp().queueOperation(
                                 new OwnerChatroomUpdateOperation(
                                         me,
@@ -70,6 +109,7 @@ public class StoragerCheckerOperation implements Operation, RepeatOperation {
                                         new ChatRoomUpdateMessage(chatroom.getName(), me.getNickName(), me.getKadNode().getNode()),
                                         0));
                     } else {
+
                         me.log(" But I am not next owner ");
                         try {
                             me.getKadNode().getDHT().remove(chatroom);
@@ -77,6 +117,8 @@ public class StoragerCheckerOperation implements Operation, RepeatOperation {
                             e.printStackTrace();
                         }
                     }
+                } else {
+                    // owner alive, no need to do anything
                 }
 
             }
@@ -87,13 +129,30 @@ public class StoragerCheckerOperation implements Operation, RepeatOperation {
 //        me.log("StoragerCheckerOperation <----");
     }
 
-    private Boolean amINextOwner(ChatRoom chatroom) {
+    private Boolean amINextOwner(ChatRoom chatroom, List<Node> deadStoragers) {
 
         Node myNode = me.getKadNode().getNode();
 
-        return chatroom.getStoragers().get(0).equals(myNode);
-    }
+        Node newOwner = null;
 
+        boolean newOwnerChoosen = false;
+
+        for (int i = 0; i < chatroom.getStoragers().size(); i++) {
+            if (newOwnerChoosen) break;
+            if (!deadStoragers.contains(chatroom.getStoragers().get(i))) {
+                newOwner = chatroom.getStoragers().get(i);
+                newOwnerChoosen = true;
+            }
+        }
+
+        // clean deadNodes
+        if(newOwner == null){
+            me.log("ERROR, new owner wasnt choosed");
+            return false;
+        }
+
+        return newOwner.equals(myNode);
+    }
 
 
     @Override

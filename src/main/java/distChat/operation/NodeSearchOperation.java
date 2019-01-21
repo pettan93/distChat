@@ -95,7 +95,7 @@ public class NodeSearchOperation implements Operation, Receiver {
             /* If we haven't finished as yet, justWait for a maximum of config.operationTimeout() time */
             int totalTimeWaited = 0;
             int timeInterval = 10;     // We re-check every n milliseconds
-            while (totalTimeWaited < this.config.operationTimeout()){
+            while (totalTimeWaited < DistChatConfiguration.NODE_SEARCH_OPERATION_TIMEOUT){
                 if (!this.askNodesorFinish()) {
                     wait(timeInterval);
                     totalTimeWaited += timeInterval;

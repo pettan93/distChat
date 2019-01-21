@@ -13,19 +13,35 @@ import java.util.List;
 
 public class ActionProcessor {
 
-    public static boolean processSendMessage(ChatUser chatUser, String chatRoomName, String message) {
+    public static boolean processSendMessage(ChatUser me, String chatRoomName, String message) {
 
-        chatUser.log("Send msg process");
+        me.log("Send msg process");
 
-        var chatroom = chatUser.getInvolvedChatroomByName(chatRoomName);
+        var chatroom = me.getInvolvedChatroomByName(chatRoomName);
 
-        var chatRoomMessage = new ChatRoomMessage(chatUser.getNickName(), message);
+        var chatRoomMessage = new ChatRoomMessage(me.getNickName(), message);
 
         var chatRoomOwnerId = chatroom.getOwnerId();
 
-        var ownerContact = chatUser.getStoredContactByKademliaId(chatRoomOwnerId);
+        var ownerContact = me.getStoredContactByKademliaId(chatRoomOwnerId);
 
-        chatUser.sendChatRoomMessage(chatRoomMessage, chatRoomName, ownerContact, true);
+        if (ownerContact != null) {
+            me.sendChatRoomMessage(chatRoomMessage, chatRoomName, ownerContact, true);
+        } else {
+            me.log("I dont have contact for chatroom owner!");
+            NodeLookupOperation ndlo = new NodeLookupOperation(
+                    me.getKadNode().getServer(),
+                    me.getKadNode(),
+                    MyUtils.kademliaId(chatRoomOwnerId),
+                    me.getKadNode().getCurrentConfiguration());
+            try {
+                ndlo.execute();
+                ownerContact = me.getStoredContactByKademliaId(chatRoomOwnerId);
+                me.sendChatRoomMessage(chatRoomMessage, chatRoomName, ownerContact, true);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         return true;
     }

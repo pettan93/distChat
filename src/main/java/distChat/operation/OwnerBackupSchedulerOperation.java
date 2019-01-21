@@ -1,5 +1,6 @@
 package distChat.operation;
 
+import distChat.DistChatConfiguration;
 import distChat.model.ChatRoom;
 import distChat.model.ChatUser;
 import kademlia.exceptions.RoutingException;
@@ -7,6 +8,7 @@ import kademlia.operation.Operation;
 
 import java.io.IOException;
 
+// operation which add to operataion queue new OwnerBackupOperation every X ms
 public class OwnerBackupSchedulerOperation implements Operation, RepeatOperation {
 
     private ChatUser me;
@@ -28,6 +30,6 @@ public class OwnerBackupSchedulerOperation implements Operation, RepeatOperation
 
     @Override
     public int getInterval() {
-        return 5000;
+        return DistChatConfiguration.OWNER_BACKUP_CHATROOM_OPERATON_INTERVAL;
     }
 }
