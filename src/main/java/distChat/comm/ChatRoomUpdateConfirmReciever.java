@@ -54,7 +54,7 @@ public class ChatRoomUpdateConfirmReciever implements Receiver {
 
             Runnable task = () -> {
                 var me = localNode.getChatUser();
-                var localChatRoom = me.getInvolvedChatroomByName("Football");
+                var localChatRoom = me.getInvolvedChatroomByName(msg.getChatRoomName());
                 var chatRoomOwnerId = localChatRoom.getOwnerId();
                 var ownerContact = me.getStoredContactByKademliaId(chatRoomOwnerId);
 

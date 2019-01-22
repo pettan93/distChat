@@ -13,21 +13,14 @@ public class Main {
 
     public static ChatNodeBuilder chatNodeBuilder;
 
+    private static final String localIp = "192.168.137.107";
+    private static final Integer dummy_nodes = 5;
+
 
     public static void main(String[] args) {
-        String ip;
-        Integer nodesCount;
-
-        try {
-            ip = args[0];
-            nodesCount = Integer.parseInt(args[1]);
-        } catch (Exception e) {
-            System.out.println("Bad program arguments");
-            return;
-        }
 
         chatNodeBuilder = new ChatNodeBuilder(
-                ip,
+                localIp,
                 7000,
                 8000);
 
@@ -35,7 +28,7 @@ public class Main {
 
         ChatUser rootNode = null;
 
-        for (int i = 0; i < nodesCount; i++) {
+        for (int i = 0; i < dummy_nodes; i++) {
             chatNodeBuilder.reset();
             ChatUser nextNode = chatNodeBuilder.build();
             if (rootNode == null) {
@@ -48,7 +41,8 @@ public class Main {
             nodes.add(nextNode);
         }
 
-        UIController.buildUserController(nodes);
+        if(nodes.size() > 0)
+            UIController.buildUserController(nodes);
         UIController.initManager();
 
 
